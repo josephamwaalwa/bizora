@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="8" fill="#101828"/>
+  <path d="M8 9C8 7.89543 8.89543 7 10 7H18C21.3137 7 24 9.68629 24 13C24 14.8364 23.1751 16.4802 21.8741 17.5839C23.7712 18.7758 25 20.8415 25 23.2C25 26.9555 21.9555 30 18.2 30H10C8.89543 30 8 29.1046 8 28V9Z" fill="url(#bizora-grad)" fill-opacity="0.15"/>
+  <path d="M9 8H17C19.7614 8 22 10.2386 22 13C22 15.7614 19.7614 18 17 18H9V8Z" fill="#4F46E5"/>
+  <path d="M9 16H18C21.3137 16 24 18.6863 24 22C24 25.3137 21.3137 28 18 28H9V16Z" fill="#0F9F8F"/>
+  <defs>
+    <linearGradient id="bizora-grad" x1="8" y1="7" x2="25" y2="30" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4F46E5"/>
+      <stop offset="1" stop-color="#0F9F8F"/>
+    </linearGradient>
+  </defs>
+</svg>

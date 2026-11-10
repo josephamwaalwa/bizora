@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    border-color: #E2E8F0;
+  }
+  body {
+    background-color: #F8FAFC;
+    color: #1E293B;
+  }
+}
+
+/* Custom scrollbars for clean modern SaaS feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Print Stylesheet for flawless document generation and PDF export */
+@media print {
+  @page {
+    margin: 15mm 15mm 20mm 15mm;
+    size: auto;
+  }
+
+  body {
+    background: #FFFFFF !important;
+    color: #101828 !important;
+    font-size: 11pt !important;
+    line-height: 1.4 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide app chrome during printing */
+  .no-print,
+  nav,
+  aside,
+  header,
+  .sidebar,
+  .topbar,
+  .toast-container,
+  button:not(.allow-print),
+  .modal-backdrop:not(.document-preview-backdrop) {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .print-document-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .page-break-inside-avoid {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
