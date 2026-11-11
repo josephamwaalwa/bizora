@@ -116,7 +116,7 @@ export const DashboardPage: React.FC = () => {
           </div>
           <div className="flex h-[3px] w-full bg-line">
             <div style={{ width: `${paidRatio}%` }} className="bg-ink" />
-            <div style={{ width: `${outstandingRatio}%` }} className="bg-copper" />
+            <div style={{ width: `${outstandingRatio}%` }} className="bg-teal-600" />
           </div>
         </div>
       </section>

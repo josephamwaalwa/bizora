@@ -262,10 +262,10 @@ export const QuotationFormPage: React.FC = () => {
             Back
           </Button>
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-0.5">
+            <span className="page-kicker block mb-1">
               Quotation Editor
             </span>
-            <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+            <h2 className="page-title">
               {isEditing ? `Edit Quotation ${quotationNumber}` : 'Create New Quotation'}
             </h2>
           </div>
@@ -300,7 +300,7 @@ export const QuotationFormPage: React.FC = () => {
           {/* SECTION A: Business Information */}
           <div className="border border-slate-200/80 rounded-md bg-white p-5 shadow-subtle space-y-3">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 font-sans">
                 Sender Information
               </span>
               <button
@@ -313,17 +313,17 @@ export const QuotationFormPage: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-600">
               <div>
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Business</span>
+                <span className="text-xs uppercase font-bold text-slate-400 block">Business</span>
                 <span className="font-semibold text-slate-900">{businessProfile.name}</span>
                 <p className="text-slate-500">{businessProfile.email}</p>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Location</span>
+                <span className="text-xs uppercase font-bold text-slate-400 block">Location</span>
                 <span className="text-slate-700">{businessProfile.address || 'Windhoek, Namibia'}</span>
                 <p className="text-slate-500">{businessProfile.phone}</p>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Tax / Registration</span>
+                <span className="text-xs uppercase font-bold text-slate-400 block">Tax / Registration</span>
                 <span className="text-slate-700 font-mono">{businessProfile.taxNumber || 'No VAT set'}</span>
                 <p className="text-slate-500 font-mono">{businessProfile.defaultCurrency} ({businessProfile.currencySymbol})</p>
               </div>
@@ -333,7 +333,7 @@ export const QuotationFormPage: React.FC = () => {
           {/* SECTION B: Client Selection */}
           <div className="border border-slate-200/80 rounded-md bg-white p-5 shadow-subtle space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 font-sans">
                 Client (Bill To)
               </span>
               <button
@@ -433,7 +433,7 @@ export const QuotationFormPage: React.FC = () => {
           {/* SECTION C & D: Line Items */}
           <div className="border border-slate-200/80 rounded-md bg-white p-5 shadow-subtle space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 font-sans">
                 Itemised Services & Products
               </span>
               <Button
@@ -453,7 +453,7 @@ export const QuotationFormPage: React.FC = () => {
                   className="p-3.5 rounded border border-slate-200 bg-slate-50/40 space-y-2.5"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <span className="text-[10px] font-mono text-slate-400 mt-2 font-bold">
+                    <span className="text-xs font-mono text-slate-400 mt-2 font-bold">
                       #{index + 1}
                     </span>
                     <div className="flex-1">
@@ -497,7 +497,7 @@ export const QuotationFormPage: React.FC = () => {
                       required
                     />
                     <div>
-                      <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1 font-sans">
+                      <span className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 font-sans">
                         Line Total
                       </span>
                       <div className="h-8 flex items-center px-2.5 rounded border border-slate-200 bg-slate-100 text-slate-800 font-mono font-bold text-xs">
@@ -512,7 +512,7 @@ export const QuotationFormPage: React.FC = () => {
 
           {/* SECTION F: Terms & Notes */}
           <div className="border border-slate-200/80 rounded-md bg-white p-5 shadow-subtle space-y-4">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans block border-b border-slate-100 pb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 font-sans block border-b border-slate-100 pb-2">
               Proposal Notes & Contractual Terms
             </span>
             <Textarea
@@ -536,7 +536,7 @@ export const QuotationFormPage: React.FC = () => {
         <div className="lg:col-span-4 space-y-6">
           {/* Metadata Card */}
           <div className="border border-slate-200/80 rounded-md bg-white p-4 shadow-subtle space-y-3">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans block border-b border-slate-100 pb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 font-sans block border-b border-slate-100 pb-2">
               Quotation Metadata
             </span>
 
@@ -595,13 +595,13 @@ export const QuotationFormPage: React.FC = () => {
 
           {/* Financial Breakdown Card */}
           <div className="border border-slate-200/80 rounded-md bg-white p-4 shadow-subtle space-y-4">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans block border-b border-slate-100 pb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 font-sans block border-b border-slate-100 pb-2">
               Financial Summary
             </span>
 
             {/* Discount Configuration */}
             <div className="space-y-1.5">
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans">
+              <span className="block text-xs font-bold uppercase tracking-wider text-slate-500 font-sans">
                 Discount
               </span>
               <div className="grid grid-cols-2 gap-2">
@@ -626,7 +626,7 @@ export const QuotationFormPage: React.FC = () => {
             {/* Tax Configuration */}
             <div className="space-y-2 pt-2 border-t border-slate-100">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 font-sans">
                   Tax Calculation
                 </span>
                 <label className="flex items-center gap-1.5 cursor-pointer text-xs text-slate-600">

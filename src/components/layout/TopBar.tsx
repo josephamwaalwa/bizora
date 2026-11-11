@@ -172,7 +172,7 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenMobileSidebar }) => {
           >
             <Bell className="h-[18px] w-[18px]" strokeWidth={1.75} />
             {activities.length > 0 && (
-              <span className="absolute right-2 top-2 h-1.5 w-1.5 bg-copper" />
+              <span className="absolute right-2 top-2 h-1.5 w-1.5 bg-indigo-600" />
             )}
           </button>
 

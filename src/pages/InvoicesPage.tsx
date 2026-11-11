@@ -193,9 +193,9 @@ export const InvoicesPage: React.FC = () => {
       ) : (
         <div className="border border-slate-200/80 rounded-md bg-white shadow-subtle overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
+            <table className="w-full text-left text-[15px] border-collapse">
               <thead>
-                <tr className="bg-slate-50/70 border-b border-slate-200 text-slate-500 text-[10px] uppercase tracking-wider font-semibold">
+                <tr className="bg-slate-50/70 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider font-semibold">
                   <th className="py-2.5 px-4 font-normal">Invoice #</th>
                   <th className="py-2.5 px-4 font-normal">Client</th>
                   <th className="py-2.5 px-3 font-normal">Issue Date</th>
@@ -220,15 +220,15 @@ export const InvoicesPage: React.FC = () => {
                     <td className="py-3 px-4">
                       <div className="font-semibold text-slate-800">{inv.clientSnapshot.name}</div>
                       {inv.clientSnapshot.companyName && (
-                        <div className="text-[11px] text-slate-500">{inv.clientSnapshot.companyName}</div>
+                        <div className="text-[13px] text-slate-500">{inv.clientSnapshot.companyName}</div>
                       )}
                     </td>
 
-                    <td className="py-3 px-3 text-slate-600 font-mono text-[11px]">
+                    <td className="py-3 px-3 text-slate-600 font-mono text-[13px]">
                       {formatDate(inv.issueDate)}
                     </td>
 
-                    <td className="py-3 px-3 text-slate-600 font-mono text-[11px]">
+                    <td className="py-3 px-3 text-slate-600 font-mono text-[13px]">
                       <span className={inv.status === 'overdue' ? 'text-rose-800 font-semibold' : ''}>
                         {formatDate(inv.dueDate)}
                       </span>

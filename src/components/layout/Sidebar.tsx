@@ -82,13 +82,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <>
       {isMobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-ink/50 lg:hidden"
+          className="fixed inset-0 z-40 bg-navy-900/60 lg:hidden"
           onClick={onCloseMobile}
         />
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 flex flex-col bg-ink text-[#E7E1D8] transition-all duration-150 ease-in-out lg:static select-none ${
+        className={`fixed top-0 bottom-0 left-0 z-40 flex flex-col bg-navy-900 text-slate-200 transition-all duration-150 ease-in-out lg:static select-none ${
           isCollapsed ? 'w-[76px]' : 'w-[248px]'
         } ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
@@ -97,15 +97,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             className="flex items-center gap-3 cursor-pointer overflow-hidden"
             onClick={() => handleNavClick('dashboard')}
           >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center bg-copper text-[15px] font-semibold text-white">
-              B
-            </div>
+            <img src="/favicon.svg" alt="Bizora" className="h-8 w-8 shrink-0" />
             {!isCollapsed && (
               <div className="min-w-0">
                 <span className="block text-[16px] font-semibold tracking-[-0.02em] text-white leading-none">
                   Bizora
                 </span>
-                <span className="mt-1 block text-[12px] text-[#A39B90] leading-none">
+                <span className="mt-1 block text-[12px] text-slate-400 leading-none">
                   Financial desk
                 </span>
               </div>
@@ -114,7 +112,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           <button
             onClick={onToggleCollapse}
-            className="hidden lg:flex p-1 text-[#A39B90] hover:text-white transition-colors"
+            className="hidden lg:flex p-1 text-slate-400 hover:text-white transition-colors"
             title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -123,17 +121,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {!isCollapsed && (
           <div className="px-5 pb-4 pt-2">
-            <p className="mb-2 text-[12px] text-[#A39B90]">Create</p>
+            <p className="mb-2 text-[12px] text-slate-400">Create</p>
             <div className="flex flex-col">
               <button
                 onClick={() => handleNavClick('quotation-new')}
-                className="py-1.5 text-left text-[15px] text-[#E7E1D8] hover:text-white"
+                className="py-1.5 text-left text-[15px] text-slate-200 hover:text-white"
               >
                 New quotation
               </button>
               <button
                 onClick={() => handleNavClick('invoice-new')}
-                className="py-1.5 text-left text-[15px] text-[#E7E1D8] hover:text-white"
+                className="py-1.5 text-left text-[15px] text-slate-200 hover:text-white"
               >
                 New invoice
               </button>
@@ -143,7 +141,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         <div className={`flex-1 overflow-y-auto pb-4 ${isCollapsed ? 'px-2' : 'px-3'}`}>
           {!isCollapsed && (
-            <div className="px-2 pb-2 pt-4 text-[12px] text-[#A39B90]">Workspace</div>
+            <div className="px-2 pb-2 pt-4 text-[12px] text-slate-400">Workspace</div>
           )}
           <div className="space-y-0.5">
             {navItems.map((item) => {
@@ -153,14 +151,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
                   className={`flex w-full items-center gap-3 px-2 py-2.5 text-left text-[15px] transition-colors ${
-                    active ? 'bg-white/10 text-white' : 'text-[#D0C8BB] hover:bg-white/5 hover:text-white'
+                    active ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'
                   } ${isCollapsed ? 'justify-center' : ''}`}
                   title={isCollapsed ? item.label : undefined}
                 >
-                  <span className={active ? 'text-copper' : 'text-[#A39B90]'}>{item.icon}</span>
+                  <span className={active ? 'text-indigo-400' : 'text-slate-400'}>{item.icon}</span>
                   {!isCollapsed && <span className="flex-1 truncate">{item.label}</span>}
                   {!isCollapsed && item.badge !== undefined && item.badge > 0 && (
-                    <span className={`num text-[13px] ${active ? 'text-white' : 'text-[#A39B90]'}`}>
+                    <span className={`num text-[13px] ${active ? 'text-white' : 'text-slate-400'}`}>
                       {item.badge}
                     </span>
                   )}
@@ -181,7 +179,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {!isCollapsed && (
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[14px] font-medium text-white">{businessProfile.name}</p>
-                <p className="truncate text-[13px] text-[#A39B90]">
+                <p className="truncate text-[13px] text-slate-400">
                   {businessProfile.defaultCurrency} · {businessProfile.currencySymbol}
                 </p>
               </div>

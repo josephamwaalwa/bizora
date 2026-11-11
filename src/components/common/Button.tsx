@@ -20,7 +20,7 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    'inline-flex items-center justify-center font-medium tracking-normal transition-colors duration-150 rounded-sm focus:outline-none focus-visible:ring-1 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:opacity-50 disabled:cursor-not-allowed select-none';
+    'inline-flex items-center justify-center font-medium tracking-normal transition-colors duration-150 rounded-sm focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:opacity-50 disabled:cursor-not-allowed select-none';
 
   const sizeStyles = {
     sm: 'h-10 px-3.5 text-[15px] gap-2',
@@ -29,8 +29,8 @@ export const Button: React.FC<ButtonProps> = ({
   }[size];
 
   const variantStyles = {
-    primary: 'bg-ink hover:bg-ink/85 text-white',
-    indigo: 'bg-ink hover:bg-ink/85 text-white',
+    primary: 'bg-indigo-600 hover:bg-indigo-700 text-white',
+    indigo: 'bg-indigo-600 hover:bg-indigo-700 text-white',
     secondary: 'bg-white hover:bg-paper-sunken text-ink border border-line-strong',
     outline: 'bg-transparent border border-line-strong text-ink hover:bg-paper-sunken',
     ghost: 'bg-transparent text-ink-secondary hover:text-ink hover:bg-paper-sunken',
