@@ -1,24 +1,21 @@
 import React, { useState, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
-import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { Badge } from '../components/common/Badge';
 import { EmptyState } from '../components/common/EmptyState';
+import { PageHeader } from '../components/common/PageHeader';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import type { QuotationStatus } from '../types';
 import {
   Plus,
   Search,
   Eye,
-  Edit,
+  Edit2,
   Copy,
   Trash2,
-  ArrowRightCircle,
+  CheckCircle2,
   FileCheck,
   FileText,
-  DollarSign,
-  Clock,
-  CheckCircle2,
 } from 'lucide-react';
 
 export const QuotationsPage: React.FC = () => {
@@ -41,17 +38,13 @@ export const QuotationsPage: React.FC = () => {
   const currency = businessProfile.defaultCurrency;
   const symbol = businessProfile.currencySymbol;
 
-  // Active search query
   const effectiveSearch = (globalSearch || localSearch).trim().toLowerCase();
 
-  // Filter & Sort
   const filteredQuotations = useMemo(() => {
     return quotations
       .filter((q) => {
-        // Status match
         if (statusFilter !== 'all' && q.status !== statusFilter) return false;
 
-        // Search match
         if (!effectiveSearch) return true;
         const numberMatch = q.quotationNumber.toLowerCase().includes(effectiveSearch);
         const clientMatch =
@@ -77,7 +70,6 @@ export const QuotationsPage: React.FC = () => {
       });
   }, [quotations, statusFilter, effectiveSearch, sortBy]);
 
-  // Quotation metrics
   const totalValue = quotations.reduce((sum, q) => sum + q.grandTotal, 0);
   const acceptedCount = quotations.filter((q) => q.status === 'accepted').length;
   const pendingCount = quotations.filter((q) => q.status === 'sent' || q.status === 'draft').length;
@@ -93,229 +85,209 @@ export const QuotationsPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Top Header & Metrics */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-bold text-slate-900 tracking-tight">Quotations</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Create, track, and convert client proposals into billable invoices.
+    <div className="space-y-12">
+      <PageHeader
+        kicker="Proposals"
+        title="Quotations"
+        description="Prepare estimates, follow client decisions, and turn accepted work into invoices."
+        actions={
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => setActiveView('quotation-new')}
+            leftIcon={<Plus className="h-4 w-4" />}
+          >
+            Create quotation
+          </Button>
+        }
+      />
+
+      <div className="grid grid-cols-1 border-y border-line sm:grid-cols-3">
+        <div className="py-6 sm:pr-8">
+          <p className="text-[14px] text-ink-secondary">Total quoted</p>
+          <p className="figure-sm mt-3">{formatCurrency(totalValue, currency, symbol)}</p>
+          <p className="meta mt-2">{quotations.length} proposals</p>
+        </div>
+        <div className="border-t border-line py-6 sm:border-t-0 sm:border-l sm:border-line sm:px-8">
+          <p className="text-[14px] text-ink-secondary">Accepted</p>
+          <p className="figure-sm mt-3">
+            {acceptedCount}
+            <span className="ml-2 text-[15px] font-normal text-ink-secondary">
+              {quotations.length > 0 ? Math.round((acceptedCount / quotations.length) * 100) : 0}%
+            </span>
           </p>
+          <p className="meta mt-2">Signed off or converted</p>
         </div>
-        <Button
-          variant="indigo"
-          size="md"
-          onClick={() => setActiveView('quotation-new')}
-          leftIcon={<Plus className="w-4 h-4" />}
-        >
-          Create Quotation
-        </Button>
+        <div className="border-t border-line py-6 sm:border-t-0 sm:border-l sm:border-line sm:pl-8">
+          <p className="text-[14px] text-ink-secondary">Pending</p>
+          <p className="figure-sm mt-3">{pendingCount}</p>
+          <p className="meta mt-2">Awaiting a decision</p>
+        </div>
       </div>
 
-      {/* Mini Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card padding="sm" className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-indigo-50 text-indigo-600">
-            <DollarSign className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Total Quoted Value</p>
-            <p className="text-lg font-bold text-slate-900 font-mono">
-              {formatCurrency(totalValue, currency, symbol)}
-            </p>
-          </div>
-        </Card>
-
-        <Card padding="sm" className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-600">
-            <CheckCircle2 className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Accepted Quotes</p>
-            <p className="text-lg font-bold text-slate-900">
-              {acceptedCount} <span className="text-xs font-normal text-slate-500">({quotations.length > 0 ? Math.round((acceptedCount / quotations.length) * 100) : 0}%)</span>
-            </p>
-          </div>
-        </Card>
-
-        <Card padding="sm" className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-amber-50 text-amber-600">
-            <Clock className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Pending Quotes</p>
-            <p className="text-lg font-bold text-slate-900">{pendingCount}</p>
-          </div>
-        </Card>
-      </div>
-
-      {/* Filters & Search Toolbar */}
-      <Card padding="sm" className="space-y-3">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-          {/* Status Tabs */}
-          <div className="flex items-center gap-1 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
-            {[
-              { id: 'all', label: 'All' },
-              { id: 'draft', label: 'Draft' },
-              { id: 'sent', label: 'Sent' },
-              { id: 'accepted', label: 'Accepted' },
-              { id: 'declined', label: 'Declined' },
-              { id: 'expired', label: 'Expired' },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setStatusFilter(tab.id as any)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
-                  statusFilter === tab.id
-                    ? 'bg-navy-900 text-white shadow-subtle'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Search & Sort Controls */}
-          <div className="flex items-center gap-2">
-            <div className="relative flex-1 sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                value={localSearch}
-                onChange={(e) => setLocalSearch(e.target.value)}
-                placeholder="Search quotes or items..."
-                className="w-full text-xs rounded-lg border border-slate-300 pl-9 pr-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600"
-              />
-            </div>
-
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              className="text-xs rounded-lg border border-slate-300 py-1.5 px-2 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+      <div className="flex flex-col gap-4 border-b border-line pb-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center gap-5 overflow-x-auto">
+          {[
+            { id: 'all', label: 'All' },
+            { id: 'draft', label: 'Draft' },
+            { id: 'sent', label: 'Sent' },
+            { id: 'accepted', label: 'Accepted' },
+            { id: 'declined', label: 'Declined' },
+            { id: 'expired', label: 'Expired' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setStatusFilter(tab.id as any)}
+              className={`whitespace-nowrap border-b-2 pb-1 text-[15px] ${
+                statusFilter === tab.id
+                  ? 'border-ink font-medium text-ink'
+                  : 'border-transparent text-ink-secondary hover:text-ink'
+              }`}
             >
-              <option value="date-desc">Newest Date</option>
-              <option value="date-asc">Oldest Date</option>
-              <option value="amount-desc">Highest Value</option>
-              <option value="number">Doc Number</option>
-            </select>
-          </div>
+              {tab.label}
+            </button>
+          ))}
         </div>
-      </Card>
 
-      {/* Quotations Table */}
+        <div className="flex items-center gap-3">
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted" />
+            <input
+              type="text"
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              placeholder="Search quotations"
+              className="field pl-10"
+            />
+          </div>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as any)}
+            className="field w-auto"
+          >
+            <option value="date-desc">Newest</option>
+            <option value="date-asc">Oldest</option>
+            <option value="amount-desc">Highest amount</option>
+            <option value="number">Document number</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Quotations Ledger Table */}
       {filteredQuotations.length === 0 ? (
         <EmptyState
-          icon={<FileText className="w-8 h-8" />}
+          icon={<FileText className="h-6 w-6" />}
           title={quotations.length === 0 ? 'No quotations created yet' : 'No matching quotations found'}
           description={
             quotations.length === 0
               ? 'Draft your first quotation to present clean, branded pricing proposals to potential clients.'
-              : 'Try adjusting your search terms or status filters.'
+              : 'Try clearing your search terms or choosing another filter.'
           }
           actionLabel="Create Quotation"
           onAction={() => setActiveView('quotation-new')}
         />
       ) : (
-        <Card padding="none" className="overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
+        <div className="overflow-x-auto">
+            <table className="ledger">
               <thead>
-                <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
-                  <th className="py-3 px-4">Quote #</th>
-                  <th className="py-3 px-4">Client</th>
-                  <th className="py-3 px-4">Issue Date</th>
-                  <th className="py-3 px-4">Expiry Date</th>
-                  <th className="py-3 px-4 text-right">Amount</th>
-                  <th className="py-3 px-4 text-center">Status</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
+                <tr>
+                  <th>Quotation</th>
+                  <th>Client</th>
+                  <th>Issued</th>
+                  <th>Expires</th>
+                  <th className="text-right">Amount</th>
+                  <th>Status</th>
+                  <th className="text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody>
                 {filteredQuotations.map((quo) => (
                   <tr
                     key={quo.id}
-                    className="hover:bg-slate-50/70 transition-colors group cursor-pointer"
+                    className="cursor-pointer"
                     onClick={() => openDocumentPreview('quote', quo)}
                   >
-                    <td className="py-3.5 px-4 font-mono font-bold text-slate-900">
+                    <td className="num font-medium">
                       {quo.quotationNumber}
                     </td>
 
-                    <td className="py-3.5 px-4">
-                      <div className="font-semibold text-slate-800">{quo.clientSnapshot.name}</div>
+                    <td>
+                      <div className="font-medium">{quo.clientSnapshot.name}</div>
                       {quo.clientSnapshot.companyName && (
-                        <div className="text-[11px] text-slate-500">{quo.clientSnapshot.companyName}</div>
+                        <div className="mt-0.5 text-[13px] text-ink-secondary">{quo.clientSnapshot.companyName}</div>
                       )}
                     </td>
 
-                    <td className="py-3.5 px-4 text-slate-600">{formatDate(quo.issueDate)}</td>
+                    <td className="text-ink-secondary">
+                      {formatDate(quo.issueDate)}
+                    </td>
 
-                    <td className="py-3.5 px-4 text-slate-600">{formatDate(quo.expiryDate)}</td>
+                    <td className="text-ink-secondary">
+                      {formatDate(quo.expiryDate)}
+                    </td>
 
-                    <td className="py-3.5 px-4 text-right font-mono font-bold text-slate-900">
+                    <td className="num text-right font-medium">
                       {formatCurrency(quo.grandTotal, quo.currency, quo.currencySymbol)}
                     </td>
 
-                    <td className="py-3.5 px-4 text-center">
-                      <Badge status={quo.status} type="quote" size="sm" />
+                    <td>
+                      <Badge status={quo.status} type="quote" />
                     </td>
 
                     <td
-                      className="py-3.5 px-4 text-right"
+                      className="text-right"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <div className="flex items-center justify-end gap-1">
-                        {/* Convert to invoice action */}
                         {quo.status !== 'declined' && !quo.convertedInvoiceId && (
                           <button
                             onClick={() => convertQuotationToInvoice(quo.id)}
-                            className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-                            title="Convert into Invoice"
+                            className="p-2 text-ink-muted hover:text-ink"
+                            title="Convert to Invoice"
                           >
-                            <ArrowRightCircle className="w-4 h-4" />
+                            <CheckCircle2 className="h-4 w-4" />
                           </button>
                         )}
 
                         {quo.convertedInvoiceId && (
                           <span
-                            className="p-1.5 text-teal-600"
+                            className="p-2 text-ink-muted"
                             title="Already converted to invoice"
                           >
-                            <FileCheck className="w-4 h-4" />
+                            <FileCheck className="h-4 w-4" />
                           </span>
                         )}
 
                         <button
                           onClick={() => openDocumentPreview('quote', quo)}
-                          className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
-                          title="View / Print Document"
+                          className="p-2 text-ink-muted hover:text-ink"
+                          title="Inspect Document"
                         >
-                          <Eye className="w-4 h-4" />
+                          <Eye className="h-4 w-4" />
                         </button>
 
                         <button
                           onClick={() => setActiveView('quotation-edit', quo.id)}
-                          className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+                          className="p-2 text-ink-muted hover:text-ink"
                           title="Edit Quotation"
                         >
-                          <Edit className="w-4 h-4" />
+                          <Edit2 className="h-4 w-4" />
                         </button>
 
                         <button
                           onClick={() => duplicateQuotation(quo.id)}
-                          className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+                          className="p-2 text-ink-muted hover:text-ink"
                           title="Duplicate Quotation"
                         >
-                          <Copy className="w-4 h-4" />
+                          <Copy className="h-4 w-4" />
                         </button>
 
                         <button
                           onClick={() => handleDelete(quo.id, quo.quotationNumber)}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                          className="p-2 text-ink-muted hover:text-[#8E3B32]"
                           title="Delete Quotation"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
                     </td>
@@ -324,7 +296,6 @@ export const QuotationsPage: React.FC = () => {
               </tbody>
             </table>
           </div>
-        </Card>
       )}
     </div>
   );

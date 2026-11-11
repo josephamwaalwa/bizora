@@ -15,7 +15,6 @@ export function formatCurrency(
     maximumFractionDigits: 2,
   }).format(numericAmount);
 
-  // If symbol is provided, use it (e.g. N$ 1,500.00), otherwise use currency code
   const prefix = currencySymbol.trim() || currencyCode;
   return `${prefix} ${formattedNumber}`;
 }
@@ -40,7 +39,7 @@ export function formatDate(dateString: string | null | undefined): string {
 }
 
 /**
- * Format relative time (e.g. "2 hours ago", "Yesterday")
+ * Format relative time (e.g. "2h ago", "Yesterday")
  */
 export function formatRelativeTime(dateString: string): string {
   if (!dateString) return '';
@@ -65,36 +64,16 @@ export function getQuotationStatusConfig(status: QuotationStatus): {
 } {
   switch (status) {
     case 'accepted':
-      return {
-        label: 'Accepted',
-        badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-        dotClass: 'bg-emerald-500',
-      };
+      return { label: 'Accepted', badgeClass: 'text-teal-800', dotClass: 'bg-teal-700' };
     case 'sent':
-      return {
-        label: 'Sent',
-        badgeClass: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-        dotClass: 'bg-indigo-500',
-      };
+      return { label: 'Sent', badgeClass: 'text-ink', dotClass: 'bg-ink' };
     case 'declined':
-      return {
-        label: 'Declined',
-        badgeClass: 'bg-rose-50 text-rose-700 border-rose-200',
-        dotClass: 'bg-rose-500',
-      };
+      return { label: 'Declined', badgeClass: 'text-[#8E3B32]', dotClass: 'bg-[#8E3B32]' };
     case 'expired':
-      return {
-        label: 'Expired',
-        badgeClass: 'bg-amber-50 text-amber-700 border-amber-200',
-        dotClass: 'bg-amber-500',
-      };
+      return { label: 'Expired', badgeClass: 'text-ink-muted', dotClass: 'bg-ink-muted' };
     case 'draft':
     default:
-      return {
-        label: 'Draft',
-        badgeClass: 'bg-slate-100 text-slate-700 border-slate-200',
-        dotClass: 'bg-slate-400',
-      };
+      return { label: 'Draft', badgeClass: 'text-ink-secondary', dotClass: 'bg-line-strong' };
   }
 }
 
@@ -108,36 +87,16 @@ export function getInvoiceStatusConfig(status: InvoiceStatus): {
 } {
   switch (status) {
     case 'paid':
-      return {
-        label: 'Paid',
-        badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-        dotClass: 'bg-emerald-500',
-      };
+      return { label: 'Paid', badgeClass: 'text-teal-800', dotClass: 'bg-teal-700' };
     case 'partially_paid':
-      return {
-        label: 'Partially Paid',
-        badgeClass: 'bg-amber-50 text-amber-800 border-amber-200',
-        dotClass: 'bg-amber-500',
-      };
+      return { label: 'Partially paid', badgeClass: 'text-[#8A5A12]', dotClass: 'bg-[#8A5A12]' };
     case 'overdue':
-      return {
-        label: 'Overdue',
-        badgeClass: 'bg-rose-50 text-rose-700 border-rose-200',
-        dotClass: 'bg-rose-500',
-      };
+      return { label: 'Overdue', badgeClass: 'text-[#8E3B32]', dotClass: 'bg-[#8E3B32]' };
     case 'sent':
-      return {
-        label: 'Sent',
-        badgeClass: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-        dotClass: 'bg-indigo-500',
-      };
+      return { label: 'Sent', badgeClass: 'text-ink', dotClass: 'bg-ink' };
     case 'draft':
     default:
-      return {
-        label: 'Draft',
-        badgeClass: 'bg-slate-100 text-slate-700 border-slate-200',
-        dotClass: 'bg-slate-400',
-      };
+      return { label: 'Draft', badgeClass: 'text-ink-secondary', dotClass: 'bg-line-strong' };
   }
 }
 

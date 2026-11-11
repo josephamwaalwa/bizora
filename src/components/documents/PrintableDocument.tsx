@@ -17,75 +17,83 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document, 
   const docNumber = isInvoice ? invoice?.invoiceNumber : quote?.quotationNumber;
   const docTitle = isInvoice ? 'TAX INVOICE' : 'QUOTATION';
   const issueDate = document.issueDate;
-  const secondaryDateLabel = isInvoice ? 'Due Date' : 'Valid Until';
+  const secondaryDateLabel = isInvoice ? 'Payment Due' : 'Valid Until';
   const secondaryDate = isInvoice ? invoice?.dueDate : quote?.expiryDate;
 
   return (
-    <div className="print-document-container bg-white text-slate-900 mx-auto max-w-4xl p-6 sm:p-10 border border-slate-200/90 rounded-2xl shadow-elevated print:border-none print:shadow-none print:p-0 print:max-w-none print:rounded-none">
-      {/* Document Header */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 pb-8 border-b-2 border-navy-900">
-        <div className="space-y-2">
+    <div className="print-document-container bg-white text-slate-900 mx-auto w-full max-w-[210mm] min-h-[297mm] p-10 sm:p-14 shadow-paper print:shadow-none print:p-0 print:m-0 print:max-w-none print:min-h-0 text-[13px] leading-normal font-sans">
+      {/* 1. LETTERHEAD HEADER */}
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-8 pb-8 border-b border-slate-300">
+        {/* Company Identity */}
+        <div className="space-y-2 max-w-sm">
           {business.logoUrl ? (
             <img
               src={business.logoUrl}
               alt={business.name}
-              className="h-14 max-w-[200px] object-contain mb-2"
+              className="h-12 max-w-[180px] object-contain object-left mb-2"
             />
           ) : (
-            <div className="flex items-center gap-2 mb-1">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-navy-900 text-teal-400 font-extrabold text-xl">
-                {business.name.charAt(0) || 'B'}
-              </div>
-              <span className="text-2xl font-bold tracking-tight text-navy-900">{business.name}</span>
+            <div className="mb-2">
+              <h1 className="text-2xl font-bold tracking-tight text-slate-900 font-sans uppercase">
+                {business.name}
+              </h1>
             </div>
           )}
+
           {business.tagline && (
-            <p className="text-xs font-medium text-slate-500 max-w-sm">{business.tagline}</p>
+            <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500">
+              {business.tagline}
+            </p>
           )}
 
           <div className="text-xs text-slate-600 space-y-0.5 pt-1">
             {business.address && <p>{business.address}</p>}
-            <p>
-              {[business.city, business.country, business.postalCode].filter(Boolean).join(', ')}
-            </p>
-            <p>
+            <p>{[business.city, business.country, business.postalCode].filter(Boolean).join(', ')}</p>
+            <p className="pt-0.5">
               {business.email && <span>{business.email}</span>}
               {business.email && business.phone && <span> • </span>}
               {business.phone && <span>{business.phone}</span>}
             </p>
             {business.website && <p className="text-slate-500">{business.website}</p>}
-            <div className="pt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-slate-500">
-              {business.taxNumber && <span>Tax/VAT No: <strong className="text-slate-700">{business.taxNumber}</strong></span>}
-              {business.registrationNumber && <span>Reg No: <strong className="text-slate-700">{business.registrationNumber}</strong></span>}
-            </div>
+            
+            {(business.taxNumber || business.registrationNumber) && (
+              <div className="pt-1.5 flex flex-wrap gap-x-4 text-[11px] text-slate-500 font-mono">
+                {business.taxNumber && <span>Tax/VAT: {business.taxNumber}</span>}
+                {business.registrationNumber && <span>Reg: {business.registrationNumber}</span>}
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Right side doc title and meta */}
-        <div className="text-left sm:text-right space-y-1.5">
-          <div className="inline-block px-3 py-1 rounded-md bg-navy-900 text-white font-bold tracking-widest text-xs uppercase mb-1">
-            {docTitle}
+        {/* Document Classification & Metadata */}
+        <div className="text-left sm:text-right space-y-3">
+          <div>
+            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 uppercase">
+              {docTitle}
+            </h2>
+            <p className="font-mono text-base font-semibold text-slate-700 mt-1">
+              {docNumber}
+            </p>
           </div>
-          <h2 className="text-2xl font-extrabold text-navy-900 tracking-tight font-mono">{docNumber}</h2>
 
-          <div className="pt-2 text-xs space-y-1">
-            <div className="flex sm:justify-end gap-2">
-              <span className="text-slate-500">Issue Date:</span>
-              <span className="font-semibold text-slate-800">{formatDate(issueDate)}</span>
+          <div className="text-xs space-y-1.5 pt-2 border-t border-slate-200">
+            <div className="flex sm:justify-end gap-3">
+              <span className="text-slate-500 uppercase text-[10px] tracking-wider font-semibold">Issue Date:</span>
+              <span className="font-medium text-slate-800 font-mono">{formatDate(issueDate)}</span>
             </div>
-            <div className="flex sm:justify-end gap-2">
-              <span className="text-slate-500">{secondaryDateLabel}:</span>
-              <span className="font-semibold text-slate-800">{formatDate(secondaryDate)}</span>
+            <div className="flex sm:justify-end gap-3">
+              <span className="text-slate-500 uppercase text-[10px] tracking-wider font-semibold">{secondaryDateLabel}:</span>
+              <span className="font-medium text-slate-800 font-mono">{formatDate(secondaryDate)}</span>
             </div>
             {isInvoice && invoice?.quotationId && (
-              <div className="flex sm:justify-end gap-2 text-slate-500">
-                <span>Quotation Ref:</span>
+              <div className="flex sm:justify-end gap-3 text-slate-500">
+                <span className="uppercase text-[10px] tracking-wider font-semibold">Quote Ref:</span>
                 <span className="font-mono">{invoice.quotationId}</span>
               </div>
             )}
-            <div className="flex sm:justify-end gap-2 pt-1">
-              <span className="text-slate-500">Status:</span>
-              <span className="uppercase text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-200">
+            <div className="flex sm:justify-end items-center gap-2 pt-1">
+              <span className="text-slate-500 uppercase text-[10px] tracking-wider font-semibold">Status:</span>
+              <span className="font-mono text-[10px] font-semibold uppercase px-1.5 py-0.5 border border-slate-300 rounded text-slate-700 bg-slate-50">
                 {document.status.replace('_', ' ')}
               </span>
             </div>
@@ -93,70 +101,71 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document, 
         </div>
       </div>
 
-      {/* Bill To & Details */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 py-6 border-b border-slate-200">
+      {/* 2. RECIPIENT INFORMATION (BILL TO) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 py-6 border-b border-slate-300">
         <div>
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-2">
-            Bill To / Client
+          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-1.5">
+            Bill To
           </span>
-          <div className="text-sm">
-            <h4 className="font-bold text-slate-900 text-base">{client.companyName || client.name}</h4>
+          <div className="text-xs space-y-0.5">
+            <h4 className="font-bold text-slate-900 text-sm">{client.companyName || client.name}</h4>
             {client.companyName && client.name && (
-              <p className="text-xs text-slate-600 mt-0.5">Attn: {client.name}</p>
+              <p className="text-slate-600 font-medium">Attn: {client.name}</p>
             )}
-            <div className="text-xs text-slate-600 mt-1 space-y-0.5">
-              {client.address && <p>{client.address}</p>}
-              <p>{[client.city, client.country].filter(Boolean).join(', ')}</p>
-              {client.email && <p>{client.email}</p>}
-              {client.phone && <p>{client.phone}</p>}
-              {client.vatNumber && (
-                <p className="text-[11px] text-slate-500 pt-0.5">VAT No: {client.vatNumber}</p>
-              )}
-            </div>
+            {client.address && <p className="text-slate-600 pt-0.5">{client.address}</p>}
+            <p className="text-slate-600">{[client.city, client.country].filter(Boolean).join(', ')}</p>
+            <p className="text-slate-600 pt-0.5">
+              {client.email && <span>{client.email}</span>}
+              {client.email && client.phone && <span> • </span>}
+              {client.phone && <span>{client.phone}</span>}
+            </p>
+            {client.vatNumber && (
+              <p className="text-[11px] font-mono text-slate-500 pt-0.5">VAT No: {client.vatNumber}</p>
+            )}
           </div>
         </div>
 
         <div className="sm:text-right flex flex-col sm:items-end justify-start">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-2">
-            Payment Terms & Currency
+          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-1.5">
+            Terms & Specifications
           </span>
           <div className="text-xs text-slate-600 space-y-1">
             <p>
-              Currency: <strong className="text-slate-800">{document.currency} ({document.currencySymbol})</strong>
+              Currency: <strong className="text-slate-800 font-mono">{document.currency} ({document.currencySymbol})</strong>
             </p>
             {isInvoice ? (
-              <p>Payment Due: <strong className="text-slate-800">{formatDate(invoice?.dueDate)}</strong></p>
+              <p>Due Date: <strong className="text-slate-800 font-mono">{formatDate(invoice?.dueDate)}</strong></p>
             ) : (
-              <p>Quote Valid For: <strong className="text-slate-800">30 Calendar Days</strong></p>
+              <p>Validity: <strong className="text-slate-800">30 Calendar Days</strong></p>
             )}
           </div>
         </div>
       </div>
 
-      {/* Items Table */}
+      {/* 3. ITEMISED TABLE */}
       <div className="py-6">
-        <table className="w-full text-left text-xs border-collapse">
+        <table className="stationery-table w-full text-left text-xs border-collapse">
           <thead>
-            <tr className="border-b-2 border-slate-800 text-slate-700 uppercase tracking-wider font-semibold">
-              <th className="py-3 px-2 text-left w-12">#</th>
-              <th className="py-3 px-2 text-left">Description</th>
-              <th className="py-3 px-2 text-right w-20">Qty</th>
-              <th className="py-3 px-2 text-right w-28">Unit Price ({document.currencySymbol})</th>
-              <th className="py-3 px-2 text-right w-32">Total ({document.currencySymbol})</th>
+            <tr className="border-t-2 border-b-2 border-slate-900 text-slate-700 text-[10px] uppercase tracking-wider font-bold">
+              <th className="py-2.5 px-1 text-left w-10">#</th>
+              <th className="py-2.5 px-3 text-left">Description</th>
+              <th className="py-2.5 px-3 text-right w-16">Qty</th>
+              <th className="py-2.5 px-3 text-right w-28">Unit Price ({document.currencySymbol})</th>
+              <th className="py-2.5 px-2 text-right w-32">Total ({document.currencySymbol})</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200">
             {document.items.map((item, index) => (
-              <tr key={item.id} className="hover:bg-slate-50/50">
-                <td className="py-3.5 px-2 text-slate-400 font-mono text-[11px]">{index + 1}</td>
-                <td className="py-3.5 px-2 text-slate-900 font-medium whitespace-pre-wrap leading-relaxed">
+              <tr key={item.id} className="align-top">
+                <td className="py-3 px-1 text-slate-400 font-mono text-[11px]">{index + 1}</td>
+                <td className="py-3 px-3 text-slate-900 font-normal whitespace-pre-wrap leading-relaxed">
                   {item.description}
                 </td>
-                <td className="py-3.5 px-2 text-right text-slate-700 font-mono">{item.quantity}</td>
-                <td className="py-3.5 px-2 text-right text-slate-700 font-mono">
+                <td className="py-3 px-3 text-right text-slate-700 font-mono text-xs">{item.quantity}</td>
+                <td className="py-3 px-3 text-right text-slate-700 font-mono text-xs">
                   {formatCurrency(item.unitPrice, document.currency, document.currencySymbol).replace(document.currencySymbol, '').trim()}
                 </td>
-                <td className="py-3.5 px-2 text-right font-semibold text-slate-900 font-mono">
+                <td className="py-3 px-2 text-right font-semibold text-slate-900 font-mono text-xs">
                   {formatCurrency(item.total, document.currency, document.currencySymbol).replace(document.currencySymbol, '').trim()}
                 </td>
               </tr>
@@ -165,56 +174,59 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document, 
         </table>
       </div>
 
-      {/* Financial Totals & Payment Details */}
-      <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 pt-4 pb-8 border-t border-slate-200 page-break-inside-avoid">
-        {/* Left side: Banking details or payment notes */}
-        <div className="sm:col-span-7 space-y-4">
+      {/* 4. FINANCIAL SUMMARY & TOTALS */}
+      <div className="flex flex-col sm:flex-row justify-between items-start gap-8 pt-4 pb-8 border-t border-slate-300 page-break-inside-avoid">
+        {/* Left side: Notes */}
+        <div className="w-full sm:max-w-md space-y-4">
+          {document.notes && (
+            <div className="text-xs text-slate-600">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                Notes
+              </span>
+              <p className="whitespace-pre-wrap leading-relaxed text-slate-700">{document.notes}</p>
+            </div>
+          )}
+
+          {/* Banking Information (Clean tabular layout, no bubble cards) */}
           {business.bankDetails && business.bankDetails.accountNumber && (
-            <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 text-xs">
-              <h5 className="font-bold text-slate-800 uppercase tracking-wider text-[11px] mb-2 flex items-center gap-1.5">
-                <span>Banking & Payment Instructions</span>
-              </h5>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-slate-600">
+            <div className="pt-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">
+                Payment & Banking Details
+              </span>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-600 font-sans">
                 <div>
-                  <span className="text-slate-400 block text-[10px]">Bank:</span>
-                  <span className="font-semibold text-slate-800">{business.bankDetails.bankName}</span>
+                  <span className="text-slate-400 text-[10px] block uppercase">Bank:</span>
+                  <span className="font-medium text-slate-800">{business.bankDetails.bankName}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[10px]">Account Name:</span>
-                  <span className="font-semibold text-slate-800">{business.bankDetails.accountName}</span>
+                  <span className="text-slate-400 text-[10px] block uppercase">Account Name:</span>
+                  <span className="font-medium text-slate-800">{business.bankDetails.accountName}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[10px]">Account Number:</span>
+                  <span className="text-slate-400 text-[10px] block uppercase">Account Number:</span>
                   <span className="font-mono font-semibold text-slate-900">{business.bankDetails.accountNumber}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[10px]">Branch Code:</span>
+                  <span className="text-slate-400 text-[10px] block uppercase">Branch Code:</span>
                   <span className="font-mono text-slate-800">{business.bankDetails.branchCode}</span>
                 </div>
                 {business.bankDetails.swiftCode && (
                   <div>
-                    <span className="text-slate-400 block text-[10px]">SWIFT Code:</span>
+                    <span className="text-slate-400 text-[10px] block uppercase">SWIFT / BIC:</span>
                     <span className="font-mono text-slate-800">{business.bankDetails.swiftCode}</span>
                   </div>
                 )}
                 <div>
-                  <span className="text-slate-400 block text-[10px]">Reference:</span>
-                  <span className="font-bold text-navy-900 font-mono">{docNumber}</span>
+                  <span className="text-slate-400 text-[10px] block uppercase">Reference:</span>
+                  <span className="font-mono font-bold text-slate-900">{docNumber}</span>
                 </div>
               </div>
             </div>
           )}
-
-          {document.notes && (
-            <div className="text-xs text-slate-600">
-              <span className="font-semibold text-slate-700 block mb-1">Notes:</span>
-              <p className="whitespace-pre-wrap leading-relaxed">{document.notes}</p>
-            </div>
-          )}
         </div>
 
-        {/* Right side: Calculations */}
-        <div className="sm:col-span-5 space-y-2 text-xs">
+        {/* Right side: Calculation Breakdown */}
+        <div className="w-full sm:w-72 space-y-2 text-xs">
           <div className="flex justify-between py-1 text-slate-600">
             <span>Subtotal</span>
             <span className="font-mono font-medium text-slate-800">
@@ -223,7 +235,7 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document, 
           </div>
 
           {document.discountAmount > 0 && (
-            <div className="flex justify-between py-1 text-emerald-700">
+            <div className="flex justify-between py-1 text-slate-700">
               <span>
                 Discount {document.discountType === 'percentage' ? `(${document.discountValue}%)` : ''}
               </span>
@@ -244,35 +256,37 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document, 
             </div>
           )}
 
-          <div className="flex justify-between py-2.5 border-t-2 border-slate-800 text-sm font-bold text-navy-900">
-            <span>Total</span>
-            <span className="font-mono text-base">
+          {/* Grand Total */}
+          <div className="flex justify-between py-2 border-t border-b-2 border-slate-900 text-sm font-bold text-slate-900">
+            <span className="uppercase tracking-wider">Total</span>
+            <span className="font-mono text-base font-extrabold">
               {formatCurrency(document.grandTotal, document.currency, document.currencySymbol)}
             </span>
           </div>
 
+          {/* Invoice-Specific Payment Reconciliation */}
           {isInvoice && (
-            <>
-              <div className="flex justify-between py-1 text-emerald-700 font-medium">
+            <div className="pt-2 space-y-1.5">
+              <div className="flex justify-between py-0.5 text-slate-600">
                 <span>Amount Paid</span>
-                <span className="font-mono">
+                <span className="font-mono font-medium text-slate-800">
                   {formatCurrency(invoice?.amountPaid || 0, document.currency, document.currencySymbol)}
                 </span>
               </div>
-              <div className="flex justify-between py-2 border-t border-slate-300 text-sm font-extrabold text-navy-900 bg-slate-50 px-2 rounded-lg">
-                <span>Balance Due</span>
-                <span className="font-mono text-base text-rose-600">
+              <div className="flex justify-between py-1.5 border-t border-slate-300 font-bold text-slate-900">
+                <span className="uppercase tracking-wider text-xs">Balance Due</span>
+                <span className="font-mono text-base font-extrabold text-slate-900">
                   {formatCurrency(invoice?.outstandingBalance || 0, document.currency, document.currencySymbol)}
                 </span>
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Terms and Sign-off */}
+      {/* 5. TERMS & CONDITIONS */}
       {document.terms && (
-        <div className="pt-4 pb-6 border-t border-slate-200 text-xs text-slate-500 page-break-inside-avoid">
+        <div className="pt-4 pb-6 border-t border-slate-200 text-[11px] text-slate-500 page-break-inside-avoid">
           <span className="font-bold text-slate-700 uppercase tracking-wider text-[10px] block mb-1">
             Terms & Conditions
           </span>
@@ -280,23 +294,23 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document, 
         </div>
       )}
 
-      {/* Signature line for formal commercial validity */}
-      <div className="grid grid-cols-2 gap-8 pt-8 mt-4 border-t border-slate-100 text-xs page-break-inside-avoid">
+      {/* 6. FORMAL SIGN-OFF LINES */}
+      <div className="grid grid-cols-2 gap-12 pt-8 mt-4 border-t border-slate-200 text-xs page-break-inside-avoid">
         <div>
-          <div className="h-10 border-b border-slate-300 w-48 mb-1.5" />
-          <p className="font-medium text-slate-700">Authorized Signature</p>
-          <p className="text-[11px] text-slate-400">{business.name}</p>
+          <div className="h-10 border-b border-slate-400 w-48 mb-1.5" />
+          <p className="font-semibold text-slate-800">Authorized Signature</p>
+          <p className="text-[11px] text-slate-500">{business.name}</p>
         </div>
         <div className="text-right flex flex-col items-end">
-          <div className="h-10 border-b border-slate-300 w-36 mb-1.5" />
-          <p className="font-medium text-slate-700">Date of Acceptance</p>
-          <p className="text-[11px] text-slate-400">Client Sign-off</p>
+          <div className="h-10 border-b border-slate-400 w-48 mb-1.5" />
+          <p className="font-semibold text-slate-800">Client Acceptance Signature</p>
+          <p className="text-[11px] text-slate-500">{client.name}</p>
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="mt-8 pt-4 border-t border-slate-100 text-center text-[10px] text-slate-400">
-        <p>Bizora • {business.name} • {business.email || business.website}</p>
+      {/* 7. STATIONERY FOOTER */}
+      <div className="mt-12 pt-4 border-t border-slate-200 text-center text-[10px] text-slate-400 font-sans tracking-wide">
+        <p>Bizora Corporate Document • {business.name} • {business.email || business.website}</p>
       </div>
     </div>
   );

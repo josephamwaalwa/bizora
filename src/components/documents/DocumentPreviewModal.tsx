@@ -4,9 +4,9 @@ import { PrintableDocument } from './PrintableDocument';
 import { Button } from '../common/Button';
 import {
   Printer,
-  Edit,
+  Edit2,
   Copy,
-  ArrowRightCircle,
+  ArrowRight,
   CreditCard,
   X,
   FileCheck,
@@ -69,36 +69,34 @@ export const DocumentPreviewModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-navy-950/80 backdrop-blur-sm document-preview-backdrop">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/70 backdrop-blur-xs document-preview-backdrop">
       {/* Top action toolbar (hidden on print) */}
-      <div className="sticky top-0 z-20 flex flex-wrap items-center justify-between gap-3 border-b border-navy-800 bg-navy-900/95 px-4 sm:px-8 py-3.5 text-white backdrop-blur-md no-print">
+      <div className="sticky top-0 z-20 flex flex-wrap items-center justify-between gap-3 border-b border-slate-700 bg-slate-900 px-4 sm:px-8 py-3 text-white no-print shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-teal-400">
-              {isInvoice ? 'Invoice Preview' : 'Quotation Preview'}
-            </span>
-            <span className="font-mono text-sm font-bold text-white">
-              {isInvoice ? invoice?.invoiceNumber : quote?.quotationNumber}
-            </span>
-          </div>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+            {isInvoice ? 'Invoice' : 'Quotation'}
+          </span>
+          <span className="font-mono text-sm font-bold text-white tracking-wide">
+            {isInvoice ? invoice?.invoiceNumber : quote?.quotationNumber}
+          </span>
         </div>
 
         {/* Action Buttons */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Status quick changer */}
-          <div className="flex items-center gap-1.5 bg-navy-800 rounded-lg px-2 py-1 border border-navy-700">
-            <span className="text-[11px] text-slate-400">Status:</span>
+          <div className="flex items-center gap-1.5 bg-slate-800 rounded px-2 py-1 border border-slate-700">
+            <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Status:</span>
             {isInvoice ? (
               <select
                 value={invoice?.status}
                 onChange={(e) => updateInvoiceStatus(invoice!.id, e.target.value as InvoiceStatus)}
                 className="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer"
               >
-                <option value="draft" className="bg-navy-900 text-white">Draft</option>
-                <option value="sent" className="bg-navy-900 text-white">Sent</option>
-                <option value="partially_paid" className="bg-navy-900 text-white">Partially Paid</option>
-                <option value="paid" className="bg-navy-900 text-white">Paid</option>
-                <option value="overdue" className="bg-navy-900 text-white">Overdue</option>
+                <option value="draft" className="bg-slate-900 text-white">Draft</option>
+                <option value="sent" className="bg-slate-900 text-white">Sent</option>
+                <option value="partially_paid" className="bg-slate-900 text-white">Partially Paid</option>
+                <option value="paid" className="bg-slate-900 text-white">Paid</option>
+                <option value="overdue" className="bg-slate-900 text-white">Overdue</option>
               </select>
             ) : (
               <select
@@ -106,11 +104,11 @@ export const DocumentPreviewModal: React.FC = () => {
                 onChange={(e) => updateQuotationStatus(quote!.id, e.target.value as QuotationStatus)}
                 className="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer"
               >
-                <option value="draft" className="bg-navy-900 text-white">Draft</option>
-                <option value="sent" className="bg-navy-900 text-white">Sent</option>
-                <option value="accepted" className="bg-navy-900 text-white">Accepted</option>
-                <option value="declined" className="bg-navy-900 text-white">Declined</option>
-                <option value="expired" className="bg-navy-900 text-white">Expired</option>
+                <option value="draft" className="bg-slate-900 text-white">Draft</option>
+                <option value="sent" className="bg-slate-900 text-white">Sent</option>
+                <option value="accepted" className="bg-slate-900 text-white">Accepted</option>
+                <option value="declined" className="bg-slate-900 text-white">Declined</option>
+                <option value="expired" className="bg-slate-900 text-white">Expired</option>
               </select>
             )}
           </div>
@@ -118,19 +116,19 @@ export const DocumentPreviewModal: React.FC = () => {
           {/* Quotation: Convert to Invoice */}
           {!isInvoice && quote?.status !== 'declined' && !quote?.convertedInvoiceId && (
             <Button
-              variant="indigo"
+              variant="secondary"
               size="sm"
-              leftIcon={<ArrowRightCircle className="w-4 h-4" />}
+              leftIcon={<ArrowRight className="w-3.5 h-3.5 text-teal-600" />}
               onClick={handleConvertToInvoice}
             >
               Convert to Invoice
             </Button>
           )}
 
-          {/* Quotation already converted badge */}
+          {/* Quotation already converted indicator */}
           {!isInvoice && quote?.convertedInvoiceId && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium bg-teal-500/20 text-teal-300 border border-teal-500/40 rounded-lg">
-              <FileCheck className="w-3.5 h-3.5" />
+            <span className="inline-flex items-center gap-1.5 px-2 py-1 text-[11px] font-medium bg-slate-800 text-slate-300 border border-slate-700 rounded">
+              <FileCheck className="w-3.5 h-3.5 text-teal-400" />
               Converted
             </span>
           )}
@@ -138,9 +136,9 @@ export const DocumentPreviewModal: React.FC = () => {
           {/* Invoice: Record Payment */}
           {isInvoice && invoice?.status !== 'paid' && (
             <Button
-              variant="success"
+              variant="secondary"
               size="sm"
-              leftIcon={<CreditCard className="w-4 h-4" />}
+              leftIcon={<CreditCard className="w-3.5 h-3.5 text-emerald-600" />}
               onClick={handleRecordPayment}
             >
               Record Payment
@@ -150,7 +148,7 @@ export const DocumentPreviewModal: React.FC = () => {
           <Button
             variant="secondary"
             size="sm"
-            leftIcon={<Edit className="w-3.5 h-3.5" />}
+            leftIcon={<Edit2 className="w-3.5 h-3.5" />}
             onClick={handleEdit}
           >
             Edit
@@ -168,8 +166,7 @@ export const DocumentPreviewModal: React.FC = () => {
           <Button
             variant="primary"
             size="sm"
-            className="bg-teal-600 hover:bg-teal-500 text-white"
-            leftIcon={<Printer className="w-4 h-4" />}
+            leftIcon={<Printer className="w-3.5 h-3.5" />}
             onClick={handlePrint}
           >
             Print / Save PDF
@@ -177,7 +174,7 @@ export const DocumentPreviewModal: React.FC = () => {
 
           <button
             onClick={closeDocumentPreview}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-navy-800 hover:text-white transition-colors"
+            className="rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-white transition-colors ml-1"
             title="Close Preview"
           >
             <X className="w-5 h-5" />
@@ -185,8 +182,8 @@ export const DocumentPreviewModal: React.FC = () => {
         </div>
       </div>
 
-      {/* Document Canvas Container */}
-      <div className="py-6 sm:py-10 px-2 sm:px-6">
+      {/* Desk Preview Container */}
+      <div className="py-8 sm:py-12 px-3 sm:px-6 flex justify-center bg-slate-200/60 print:bg-white print:p-0">
         <PrintableDocument document={data} type={type} />
       </div>
     </div>

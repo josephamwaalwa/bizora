@@ -10,9 +10,6 @@ import {
   UserPlus,
   RefreshCw,
   Building,
-  CheckCircle2,
-  Clock,
-  ExternalLink,
 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { formatRelativeTime } from '../../utils/formatters';
@@ -24,7 +21,6 @@ interface TopBarProps {
 export const TopBar: React.FC<TopBarProps> = ({ onOpenMobileSidebar }) => {
   const {
     activeView,
-    activeEntityId,
     setActiveView,
     searchQuery,
     setSearchQuery,
@@ -45,7 +41,6 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenMobileSidebar }) => {
   const quickRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  // Close popovers on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
@@ -62,35 +57,18 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenMobileSidebar }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Compute view titles
-  const getHeaderInfo = () => {
-    switch (activeView) {
-      case 'dashboard':
-        return { title: 'Dashboard', subtitle: 'Overview of business performance and documents' };
-      case 'quotations':
-        return { title: 'Quotations', subtitle: 'Manage price quotes and proposals' };
-      case 'quotation-new':
-        return { title: 'New Quotation', subtitle: 'Create a professional quotation for a client' };
-      case 'quotation-edit':
-        return { title: 'Edit Quotation', subtitle: `Modifying quote ${activeEntityId || ''}` };
-      case 'invoices':
-        return { title: 'Invoices', subtitle: 'Manage billing, overdue accounts and payments' };
-      case 'invoice-new':
-        return { title: 'New Invoice', subtitle: 'Issue a new invoice to a client' };
-      case 'invoice-edit':
-        return { title: 'Edit Invoice', subtitle: `Modifying invoice ${activeEntityId || ''}` };
-      case 'clients':
-        return { title: 'Clients', subtitle: 'Client directory and billing histories' };
-      case 'client-detail':
-        return { title: 'Client Profile', subtitle: 'Client details, quotations and invoices' };
-      case 'settings':
-        return { title: 'Business Settings', subtitle: 'Profile, default terms, VAT and banking' };
-      default:
-        return { title: 'Bizora', subtitle: 'Business Management' };
-    }
+  const viewLabel: Record<string, string> = {
+    dashboard: 'Overview',
+    quotations: 'Quotations',
+    'quotation-new': 'New quotation',
+    'quotation-edit': 'Edit quotation',
+    invoices: 'Invoices',
+    'invoice-new': 'New invoice',
+    'invoice-edit': 'Edit invoice',
+    clients: 'Clients',
+    'client-detail': 'Client',
+    settings: 'Settings',
   };
-
-  const headerInfo = getHeaderInfo();
 
   const handleNotificationClick = (referenceId?: string) => {
     if (!referenceId) return;
@@ -106,38 +84,32 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenMobileSidebar }) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-white/95 px-4 sm:px-6 backdrop-blur-md">
-      {/* Left: Mobile hamburger & Page Title */}
-      <div className="flex items-center gap-3">
+    <header className="topbar sticky top-0 z-30 flex h-16 w-full items-center justify-between gap-4 border-b border-line bg-paper px-5 sm:px-8 lg:px-12 xl:px-16">
+      <div className="flex min-w-0 items-center gap-3">
         <button
           onClick={onOpenMobileSidebar}
-          className="lg:hidden p-2 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100"
-          aria-label="Open sidebar"
+          className="lg:hidden p-1 text-ink-secondary hover:text-ink"
+          aria-label="Open navigation"
         >
           <Menu className="w-5 h-5" />
         </button>
-
-        <div>
-          <h1 className="text-lg font-bold text-slate-900 tracking-tight leading-none">{headerInfo.title}</h1>
-          <p className="hidden sm:block text-xs text-slate-500 mt-0.5">{headerInfo.subtitle}</p>
-        </div>
+        <p className="truncate text-[15px] text-ink-secondary lg:hidden">{viewLabel[activeView] || 'Bizora'}</p>
       </div>
 
-      {/* Center: Universal Search */}
-      <div className="hidden md:flex flex-1 max-w-md mx-6">
+      <div className="hidden md:flex flex-1 max-w-md">
         <div className="relative w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search quotes, invoices, clients..."
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-1.5 pl-9 pr-3 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all"
+            placeholder="Search documents or clients"
+            className="field pl-10"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-ink-muted hover:text-ink"
             >
               Clear
             </button>
@@ -145,113 +117,91 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenMobileSidebar }) => {
         </div>
       </div>
 
-      {/* Right: Quick actions, notifications, profile */}
-      <div className="flex items-center gap-2.5">
-        {/* Quick Create Dropdown */}
+      <div className="flex items-center gap-2 sm:gap-3">
         <div className="relative" ref={quickRef}>
           <Button
-            variant="indigo"
+            variant="secondary"
             size="sm"
             onClick={() => setShowQuickCreate(!showQuickCreate)}
-            leftIcon={<Plus className="w-3.5 h-3.5" />}
+            leftIcon={<Plus className="w-4 h-4" />}
           >
-            <span className="hidden sm:inline">Create</span>
+            <span className="hidden sm:inline">New</span>
           </Button>
 
           {showQuickCreate && (
-            <div className="absolute right-0 mt-2 w-48 rounded-xl border border-slate-200 bg-white py-1.5 shadow-elevated z-50">
+            <div className="absolute right-0 z-50 mt-2 w-52 border border-line bg-white py-1 shadow-modal">
               <button
                 onClick={() => {
                   setActiveView('quotation-new');
                   setShowQuickCreate(false);
                 }}
-                className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-[15px] text-ink hover:bg-paper"
               >
-                <FileText className="w-4 h-4 text-indigo-600" />
-                <span>New Quotation</span>
+                <FileText className="h-4 w-4 text-ink-muted" />
+                Quotation
               </button>
               <button
                 onClick={() => {
                   setActiveView('invoice-new');
                   setShowQuickCreate(false);
                 }}
-                className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-[15px] text-ink hover:bg-paper"
               >
-                <Receipt className="w-4 h-4 text-teal-600" />
-                <span>New Invoice</span>
+                <Receipt className="h-4 w-4 text-ink-muted" />
+                Invoice
               </button>
               <button
                 onClick={() => {
                   setActiveView('clients');
                   setShowQuickCreate(false);
                 }}
-                className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-[15px] text-ink hover:bg-paper"
               >
-                <UserPlus className="w-4 h-4 text-slate-600" />
-                <span>Add Client</span>
+                <UserPlus className="h-4 w-4 text-ink-muted" />
+                Client
               </button>
             </div>
           )}
         </div>
 
-        {/* Notifications / Activity Bell */}
         <div className="relative" ref={notifRef}>
           <button
             onClick={() => setShowNotifications(!showNotifications)}
-            className="relative p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
-            title="Activity Notifications"
+            className="relative flex h-10 w-10 items-center justify-center text-ink-secondary hover:text-ink"
+            title="Activity"
           >
-            <Bell className="w-4.5 h-4.5" />
+            <Bell className="h-[18px] w-[18px]" strokeWidth={1.75} />
             {activities.length > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-teal-500 ring-2 ring-white" />
+              <span className="absolute right-2 top-2 h-1.5 w-1.5 bg-copper" />
             )}
           </button>
 
           {showNotifications && (
-            <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl border border-slate-200 bg-white shadow-elevated z-50 overflow-hidden">
-              <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3 bg-slate-50/50">
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-slate-400" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-700">
-                    Recent Activity
-                  </span>
-                </div>
-                <span className="text-[11px] font-medium text-slate-500">
-                  {activities.length} recorded
-                </span>
+            <div className="absolute right-0 z-50 mt-2 w-[22rem] border border-line bg-white shadow-modal">
+              <div className="flex items-baseline justify-between border-b border-line px-5 py-4">
+                <span className="text-[16px] font-medium text-ink">Activity</span>
+                <span className="text-[13px] text-ink-muted">{activities.length} records</span>
               </div>
 
-              <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
+              <div className="max-h-96 overflow-y-auto">
                 {activities.length === 0 ? (
-                  <div className="p-6 text-center text-xs text-slate-500">No recent activities.</div>
+                  <div className="px-5 py-8 text-[15px] text-ink-secondary">No recorded events.</div>
                 ) : (
-                  activities.slice(0, 8).map((act) => (
+                  activities.slice(0, 6).map((act) => (
                     <div
                       key={act.id}
                       onClick={() => handleNotificationClick(act.referenceId)}
-                      className={`p-3.5 text-left transition-colors flex items-start gap-3 ${
-                        act.referenceId ? 'hover:bg-slate-50 cursor-pointer' : ''
+                      className={`border-b border-line px-5 py-4 last:border-b-0 ${
+                        act.referenceId ? 'cursor-pointer hover:bg-paper' : ''
                       }`}
                     >
-                      <div className="mt-0.5 rounded-lg p-1.5 bg-indigo-50 text-indigo-600 shrink-0">
-                        {act.type === 'payment_recorded' ? (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        ) : act.type.startsWith('quote') ? (
-                          <FileText className="w-3.5 h-3.5 text-indigo-600" />
-                        ) : (
-                          <Receipt className="w-3.5 h-3.5 text-teal-600" />
-                        )}
+                      <div className="flex items-baseline justify-between gap-3">
+                        <p className="truncate text-[15px] font-medium text-ink">{act.title}</p>
+                        <span className="shrink-0 text-[13px] text-ink-muted">
+                          {formatRelativeTime(act.timestamp)}
+                        </span>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-baseline justify-between gap-2">
-                          <p className="text-xs font-semibold text-slate-900 truncate">{act.title}</p>
-                          <span className="text-[10px] text-slate-400 shrink-0">
-                            {formatRelativeTime(act.timestamp)}
-                          </span>
-                        </div>
-                        <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-2">{act.description}</p>
-                      </div>
-                      {act.referenceId && <ExternalLink className="w-3 h-3 text-slate-300 shrink-0 mt-1" />}
+                      <p className="mt-1 text-[14px] leading-snug text-ink-secondary">{act.description}</p>
                     </div>
                   ))
                 )}
@@ -260,54 +210,51 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenMobileSidebar }) => {
           )}
         </div>
 
-        {/* Profile Avatar / Menu */}
         <div className="relative" ref={profileRef}>
           <button
             onClick={() => setShowProfileMenu(!showProfileMenu)}
-            className="flex items-center gap-2 p-1 pl-2 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors"
+            className="flex items-center gap-3 py-1 pl-1"
           >
-            <span className="text-xs font-medium text-slate-700 max-w-[100px] truncate hidden sm:inline">
+            <span className="hidden max-w-[160px] truncate text-[15px] text-ink sm:inline">
               {businessProfile.name}
             </span>
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-navy-900 text-teal-400 font-bold text-xs">
+            <div className="flex h-9 w-9 items-center justify-center bg-ink text-[14px] font-medium text-white">
               {businessProfile.name.charAt(0) || 'B'}
             </div>
           </button>
 
           {showProfileMenu && (
-            <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 bg-white py-2 shadow-elevated z-50">
-              <div className="px-4 py-2 border-b border-slate-100">
-                <p className="text-xs font-semibold text-slate-900 truncate">{businessProfile.name}</p>
-                <p className="text-[11px] text-slate-500 truncate">{businessProfile.email || 'Business Account'}</p>
+            <div className="absolute right-0 z-50 mt-2 w-64 border border-line bg-white py-1 shadow-modal">
+              <div className="border-b border-line px-4 py-3">
+                <p className="truncate text-[15px] font-medium text-ink">{businessProfile.name}</p>
+                <p className="truncate text-[13px] text-ink-secondary">{businessProfile.email}</p>
               </div>
-
-              <div className="py-1">
-                <button
-                  onClick={() => {
-                    setActiveView('settings');
-                    setShowProfileMenu(false);
-                  }}
-                  className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
-                >
-                  <Building className="w-4 h-4 text-slate-500" />
-                  <span>Business Settings</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setShowProfileMenu(false);
-                    showConfirmDialog({
-                      title: 'Restore Sample Demo Data?',
-                      message: 'This will load sample clients, quotations and invoices for Kalahari Creative Studio. Ideal for testing and exploring Bizora.',
-                      confirmLabel: 'Restore Demo Data',
-                      onConfirm: resetToDemoData,
-                    });
-                  }}
-                  className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-indigo-600 hover:bg-indigo-50"
-                >
-                  <RefreshCw className="w-4 h-4 text-indigo-600" />
-                  <span>Restore Demo Data</span>
-                </button>
-              </div>
+              <button
+                onClick={() => {
+                  setActiveView('settings');
+                  setShowProfileMenu(false);
+                }}
+                className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-[15px] text-ink hover:bg-paper"
+              >
+                <Building className="h-4 w-4 text-ink-muted" />
+                Business settings
+              </button>
+              <button
+                onClick={() => {
+                  setShowProfileMenu(false);
+                  showConfirmDialog({
+                    title: 'Restore demo data?',
+                    message:
+                      'This will reset sample Namibian agency data (Kalahari Creative Studio) for testing and exploring Bizora.',
+                    confirmLabel: 'Restore demo data',
+                    onConfirm: resetToDemoData,
+                  });
+                }}
+                className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-[15px] text-ink hover:bg-paper"
+              >
+                <RefreshCw className="h-4 w-4 text-ink-muted" />
+                Restore demo data
+              </button>
             </div>
           )}
         </div>

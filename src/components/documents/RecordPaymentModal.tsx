@@ -51,25 +51,25 @@ export const RecordPaymentModal: React.FC = () => {
       onClose={closePaymentModal}
       title={
         <div className="flex items-center gap-2">
-          <CreditCard className="w-5 h-5 text-teal-600" />
-          <span>Record Payment for {invoice.invoiceNumber}</span>
+          <CreditCard className="w-4 h-4 text-slate-700" />
+          <span>Record Payment • {invoice.invoiceNumber}</span>
         </div>
       }
-      subtitle={`Client: ${invoice.clientSnapshot.name || 'Client'}`}
+      subtitle={`Customer Account: ${invoice.clientSnapshot.name || 'Client'}`}
       maxWidth="md"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Balance Card */}
-        <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 flex justify-between items-center">
+        {/* Balance Card: Flat and Structured */}
+        <div className="rounded border border-slate-200 bg-slate-50/70 p-3.5 flex justify-between items-center text-xs">
           <div>
-            <span className="text-xs text-slate-500 block">Total Invoice Amount</span>
-            <span className="font-semibold text-slate-800 text-sm">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Total Invoiced</span>
+            <span className="font-mono font-semibold text-slate-800 text-sm">
               {formatCurrency(invoice.grandTotal, invoice.currency, invoice.currencySymbol)}
             </span>
           </div>
           <div className="text-right">
-            <span className="text-xs text-slate-500 block">Outstanding Balance</span>
-            <span className="font-bold text-base text-rose-600">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Balance Outstanding</span>
+            <span className="font-mono font-bold text-sm text-slate-900">
               {formatCurrency(balance, invoice.currency, invoice.currencySymbol)}
             </span>
           </div>
@@ -91,7 +91,7 @@ export const RecordPaymentModal: React.FC = () => {
           required
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input
             label="Payment Date"
             type="date"
@@ -117,7 +117,7 @@ export const RecordPaymentModal: React.FC = () => {
 
         <Input
           label="Reference / Transaction ID"
-          placeholder="e.g. FNB-EFT-99410, Cash Slip #12"
+          placeholder="e.g. FNB-EFT-99410"
           value={reference}
           onChange={(e) => setReference(e.target.value)}
           helperText="Bank statement or payment receipt reference"
@@ -125,18 +125,18 @@ export const RecordPaymentModal: React.FC = () => {
 
         <Textarea
           label="Payment Notes"
-          placeholder="Optional notes regarding this payment tranche..."
+          placeholder="Optional notes regarding this installment..."
           rows={2}
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
         />
 
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
-          <Button variant="secondary" type="button" onClick={closePaymentModal}>
+        <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-200">
+          <Button variant="secondary" size="sm" type="button" onClick={closePaymentModal}>
             Cancel
           </Button>
-          <Button variant="indigo" type="submit">
-            Confirm & Record Payment
+          <Button variant="primary" size="sm" type="submit">
+            Confirm Payment
           </Button>
         </div>
       </form>

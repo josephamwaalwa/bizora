@@ -133,14 +133,17 @@ export const SettingsPage: React.FC = () => {
   return (
     <div className="space-y-6 pb-20">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80">
         <div>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-0.5">
+            System Preferences
+          </span>
           <h2 className="text-xl font-bold text-slate-900 tracking-tight">Business Settings</h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            Configure your enterprise profile, tax rules, currency, and document templates.
+            Configure enterprise profile, tax parameters, currency formatting, and document numbering.
           </p>
         </div>
-        <Button variant="indigo" size="md" onClick={handleSubmit}>
+        <Button variant="primary" size="sm" onClick={handleSubmit}>
           Save Settings
         </Button>
       </div>
@@ -618,9 +621,9 @@ export const SettingsPage: React.FC = () => {
           </div>
         </Card>
 
-        {/* Sticky Save Button */}
+        {/* Save Button */}
         <div className="flex justify-end pt-4">
-          <Button variant="indigo" size="lg" type="submit">
+          <Button variant="primary" size="md" type="submit">
             Save All Preferences
           </Button>
         </div>

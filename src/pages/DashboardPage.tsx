@@ -1,25 +1,11 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { StatCard } from '../components/common/StatCard';
-import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { Badge } from '../components/common/Badge';
 import { EmptyState } from '../components/common/EmptyState';
+import { PageHeader } from '../components/common/PageHeader';
 import { formatCurrency, formatDate } from '../utils/formatters';
-import {
-  FileText,
-  Receipt,
-  DollarSign,
-  Clock,
-  AlertCircle,
-  Plus,
-  ArrowUpRight,
-  TrendingUp,
-  CreditCard,
-  Users,
-  Eye,
-  CheckCircle2,
-} from 'lucide-react';
+import { Plus, Receipt } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
   const {
@@ -36,7 +22,6 @@ export const DashboardPage: React.FC = () => {
   const currency = businessProfile.defaultCurrency;
   const symbol = businessProfile.currencySymbol;
 
-  // 1. Calculations from actual data
   const totalQuotationsCount = quotations.length;
   const totalQuotationsValue = quotations.reduce((sum, q) => sum + (q.grandTotal || 0), 0);
 
@@ -51,384 +36,271 @@ export const DashboardPage: React.FC = () => {
   const outstandingBalanceTotal = invoices.reduce((sum, i) => sum + (i.outstandingBalance || 0), 0);
 
   const totalRevenuePaid = invoices.reduce((sum, i) => sum + (i.amountPaid || 0), 0);
-
   const overdueInvoices = invoices.filter((i) => i.status === 'overdue');
 
   const hasAnyDocuments = quotations.length > 0 || invoices.length > 0;
 
-  // Recent data
   const recentQuotations = [...quotations]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 5);
 
   const recentInvoices = [...invoices]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 5);
+    .slice(0, 6);
 
   const recentClients = [...clients]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 5);
 
-  // Revenue visualization calculations
-  const maxFinancial = Math.max(totalRevenuePaid + outstandingBalanceTotal, totalQuotationsValue, 1);
-  const paidPercent = Math.min(100, Math.round((totalRevenuePaid / maxFinancial) * 100));
-  const outstandingPercent = Math.min(100, Math.round((outstandingBalanceTotal / maxFinancial) * 100));
+  const totalInvoicedPortfolio = totalRevenuePaid + outstandingBalanceTotal;
+  const paidRatio = totalInvoicedPortfolio > 0 ? (totalRevenuePaid / totalInvoicedPortfolio) * 100 : 0;
+  const outstandingRatio = totalInvoicedPortfolio > 0 ? (outstandingBalanceTotal / totalInvoicedPortfolio) * 100 : 0;
 
   return (
-    <div className="space-y-6">
-      {/* Welcome Banner / Overview */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-navy-900 via-navy-800 to-indigo-950 p-6 rounded-2xl text-white shadow-elevated">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 text-xs font-semibold mb-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
-            <span>Namibian Business Hub</span>
-          </div>
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
-            Welcome back, {businessProfile.name}
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-300">
-            Monitor quotes, track outstanding balances, and streamline invoicing in {currency} ({symbol}).
-          </p>
-        </div>
+    <div className="space-y-14 lg:space-y-16">
+      <PageHeader
+        kicker="Overview"
+        title={businessProfile.name}
+        description={`Financial position in ${currency} (${symbol}). Figures are drawn from the live ledger.`}
+        actions={
+          <>
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={() => setActiveView('quotation-new')}
+              leftIcon={<Plus className="h-4 w-4" />}
+            >
+              New quotation
+            </Button>
+            <Button
+              variant="primary"
+              size="md"
+              onClick={() => setActiveView('invoice-new')}
+              leftIcon={<Receipt className="h-4 w-4" />}
+            >
+              New invoice
+            </Button>
+          </>
+        }
+      />
 
-        <div className="flex flex-wrap items-center gap-2.5">
-          <Button
-            variant="indigo"
-            size="md"
-            onClick={() => setActiveView('quotation-new')}
-            leftIcon={<Plus className="w-4 h-4" />}
-          >
-            Create Quote
-          </Button>
-          <Button
-            variant="secondary"
-            size="md"
-            onClick={() => setActiveView('invoice-new')}
-            className="bg-white/10 hover:bg-white/20 text-white border-white/20"
-            leftIcon={<Receipt className="w-4 h-4 text-teal-300" />}
-          >
-            Create Invoice
-          </Button>
-        </div>
-      </div>
-
-      {/* Summary KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <StatCard
-          title="Total Revenue"
-          value={formatCurrency(totalRevenuePaid, currency, symbol)}
-          subtitle="Collected payments"
-          icon={<DollarSign className="w-5 h-5" />}
-          iconBgColor="bg-emerald-50 text-emerald-600"
-          trend={{ value: `${invoices.filter((i) => i.status === 'paid').length} paid invoices`, isPositive: true }}
-          onClick={() => setActiveView('invoices')}
-        />
-
-        <StatCard
-          title="Outstanding"
-          value={formatCurrency(outstandingBalanceTotal, currency, symbol)}
-          subtitle={`${outstandingInvoices.length} unpaid invoice(s)`}
-          icon={<AlertCircle className="w-5 h-5" />}
-          iconBgColor="bg-rose-50 text-rose-600"
-          trend={
-            overdueInvoices.length > 0
-              ? { value: `${overdueInvoices.length} overdue`, isPositive: false }
-              : { value: 'None overdue', isPositive: true }
-          }
-          onClick={() => setActiveView('invoices')}
-        />
-
-        <StatCard
-          title="Total Invoiced"
-          value={formatCurrency(totalInvoicesValue, currency, symbol)}
-          subtitle={`${totalInvoicesCount} invoice(s) generated`}
-          icon={<Receipt className="w-5 h-5" />}
-          iconBgColor="bg-indigo-50 text-indigo-600"
-          onClick={() => setActiveView('invoices')}
-        />
-
-        <StatCard
-          title="Pending Quotes"
-          value={formatCurrency(pendingQuotationsValue, currency, symbol)}
-          subtitle={`${pendingQuotationsCount} awaiting client approval`}
-          icon={<Clock className="w-5 h-5" />}
-          iconBgColor="bg-amber-50 text-amber-600"
-          onClick={() => setActiveView('quotations')}
-        />
-
-        <StatCard
-          title="Total Quotations"
-          value={totalQuotationsCount}
-          subtitle={`Valued at ${formatCurrency(totalQuotationsValue, currency, symbol)}`}
-          icon={<FileText className="w-5 h-5" />}
-          iconBgColor="bg-slate-100 text-slate-700"
-          onClick={() => setActiveView('quotations')}
-        />
-      </div>
-
-      {/* Financial Health Visualization */}
-      <Card padding="md">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-          <div>
-            <h3 className="text-base font-semibold text-slate-900 flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-indigo-600" />
-              <span>Cash Flow & Invoicing Performance</span>
-            </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Live breakdown of paid revenue versus pending collections.
+      <section className="border-t border-line pt-8">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-0">
+          <div className="lg:col-span-7 lg:pr-12">
+            <p className="text-[15px] font-medium text-ink-secondary">Collected</p>
+            <p className="figure mt-4">{formatCurrency(totalRevenuePaid, currency, symbol)}</p>
+            <p className="mt-4 text-[15px] text-ink-secondary">
+              {invoices.filter((i) => i.status === 'paid').length} invoices fully settled
             </p>
           </div>
-          <div className="flex items-center gap-4 text-xs font-medium">
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-md bg-emerald-500" />
-              <span>Collected: {formatCurrency(totalRevenuePaid, currency, symbol)}</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-md bg-rose-500" />
-              <span>Outstanding: {formatCurrency(outstandingBalanceTotal, currency, symbol)}</span>
-            </div>
+          <div className="lg:col-span-5 lg:border-l lg:border-line lg:pl-12">
+            <p className="text-[15px] font-medium text-ink-secondary">Outstanding</p>
+            <p className="figure mt-4">{formatCurrency(outstandingBalanceTotal, currency, symbol)}</p>
+            <p className="mt-4 text-[15px] text-ink-secondary">
+              {outstandingInvoices.length} open {outstandingInvoices.length === 1 ? 'account' : 'accounts'}
+              {overdueInvoices.length > 0 && (
+                <span className="text-[#8E3B32]"> · {overdueInvoices.length} overdue</span>
+              )}
+            </p>
           </div>
         </div>
 
-        {/* Progress bar visual */}
-        <div className="space-y-2">
-          <div className="h-4 w-full bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
-            <div
-              style={{ width: `${paidPercent}%` }}
-              className="bg-emerald-500 transition-all duration-500 hover:opacity-90"
-              title={`Paid: ${paidPercent}%`}
-            />
-            <div
-              style={{ width: `${outstandingPercent}%` }}
-              className="bg-rose-500 transition-all duration-500 hover:opacity-90"
-              title={`Outstanding: ${outstandingPercent}%`}
-            />
+        <div className="mt-8">
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 text-[14px] text-ink-secondary">
+            <span>
+              Collected <span className="num text-ink">{paidRatio.toFixed(0)}%</span>
+            </span>
+            <span>
+              Outstanding <span className="num text-ink">{outstandingRatio.toFixed(0)}%</span>
+            </span>
           </div>
-          <div className="flex justify-between text-[11px] text-slate-400">
-            <span>0%</span>
-            <span>Total Value: {formatCurrency(totalRevenuePaid + outstandingBalanceTotal, currency, symbol)}</span>
-            <span>100%</span>
+          <div className="flex h-[3px] w-full bg-line">
+            <div style={{ width: `${paidRatio}%` }} className="bg-ink" />
+            <div style={{ width: `${outstandingRatio}%` }} className="bg-copper" />
           </div>
         </div>
-      </Card>
+      </section>
+
+      <section className="grid grid-cols-1 border-y border-line sm:grid-cols-3">
+        <div className="py-6 sm:pr-8 sm:border-r sm:border-line">
+          <p className="text-[14px] text-ink-secondary">Invoiced</p>
+          <p className="figure-sm mt-3">{formatCurrency(totalInvoicesValue, currency, symbol)}</p>
+          <p className="meta mt-2">{totalInvoicesCount} invoices</p>
+        </div>
+        <div className="border-t border-line py-6 sm:border-t-0 sm:px-8 sm:border-r sm:border-line">
+          <p className="text-[14px] text-ink-secondary">Quoted</p>
+          <p className="figure-sm mt-3">{formatCurrency(totalQuotationsValue, currency, symbol)}</p>
+          <p className="meta mt-2">{totalQuotationsCount} quotations</p>
+        </div>
+        <div className="border-t border-line py-6 sm:border-t-0 sm:pl-8">
+          <p className="text-[14px] text-ink-secondary">Pending quotations</p>
+          <p className="figure-sm mt-3">{formatCurrency(pendingQuotationsValue, currency, symbol)}</p>
+          <p className="meta mt-2">{pendingQuotationsCount} awaiting a decision</p>
+        </div>
+      </section>
 
       {!hasAnyDocuments ? (
         <EmptyState
-          icon={<Receipt className="w-8 h-8" />}
-          title="No business documents created yet"
-          description="Get started by creating your first client and professional quotation or invoice. Bizora will automatically compute taxes and balances."
-          actionLabel="Create First Quotation"
+          icon={<Receipt className="h-6 w-6" />}
+          title="No documents yet"
+          description="Create a quotation or invoice to start tracking what you have billed and what is still outstanding."
+          actionLabel="Create quotation"
           onAction={() => setActiveView('quotation-new')}
-          secondaryActionLabel="Create First Invoice"
+          secondaryActionLabel="Create invoice"
           onSecondaryAction={() => setActiveView('invoice-new')}
         />
       ) : (
-        /* Main Dual Column: Recent Invoices & Recent Quotes */
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Recent Invoices */}
-          <Card padding="none">
-            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <Receipt className="w-4 h-4 text-teal-600" />
-                <h3 className="font-semibold text-slate-900 text-sm">Recent Invoices</h3>
-              </div>
-              <button
-                onClick={() => setActiveView('invoices')}
-                className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
-              >
-                <span>View all ({invoices.length})</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            <div className="divide-y divide-slate-100">
-              {recentInvoices.length === 0 ? (
-                <div className="p-6 text-center text-xs text-slate-500">No invoices generated yet.</div>
-              ) : (
-                recentInvoices.map((inv) => (
-                  <div
-                    key={inv.id}
-                    className="p-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors group"
-                  >
-                    <div className="space-y-1 min-w-0 pr-3">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-bold text-slate-900">
-                          {inv.invoiceNumber}
-                        </span>
-                        <Badge status={inv.status} type="invoice" size="sm" />
-                      </div>
-                      <p className="text-xs text-slate-600 truncate">
-                        {inv.clientSnapshot.name || 'Unnamed Client'}
-                      </p>
-                      <p className="text-[11px] text-slate-400">Due {formatDate(inv.dueDate)}</p>
-                    </div>
-
-                    <div className="flex items-center gap-3 shrink-0">
-                      <div className="text-right">
-                        <p className="text-xs font-bold text-slate-900 font-mono">
-                          {formatCurrency(inv.grandTotal, inv.currency, inv.currencySymbol)}
-                        </p>
-                        {inv.status !== 'paid' && (
-                          <p className="text-[11px] font-medium text-rose-600 font-mono">
-                            Due: {formatCurrency(inv.outstandingBalance, inv.currency, inv.currencySymbol)}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-1">
-                        {inv.status !== 'paid' && (
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            title="Record Payment"
-                            onClick={() => openPaymentModal(inv)}
-                            className="p-1.5"
-                          >
-                            <CreditCard className="w-3.5 h-3.5 text-teal-600" />
-                          </Button>
-                        )}
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          title="Preview Invoice"
-                          onClick={() => openDocumentPreview('invoice', inv)}
-                          className="p-1.5"
+        <section>
+          <div className="mb-2 flex items-end justify-between gap-4">
+            <h2 className="section-title">Recent invoices</h2>
+            <button
+              onClick={() => setActiveView('invoices')}
+              className="text-[15px] text-ink-secondary hover:text-ink"
+            >
+              All invoices
+            </button>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="ledger">
+              <thead>
+                <tr>
+                  <th>Invoice</th>
+                  <th>Client</th>
+                  <th>Issued</th>
+                  <th className="text-right">Amount</th>
+                  <th>Status</th>
+                  <th className="text-right"> </th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentInvoices.map((inv) => (
+                  <tr key={inv.id} onClick={() => openDocumentPreview('invoice', inv)} className="cursor-pointer">
+                    <td className="num font-medium">{inv.invoiceNumber}</td>
+                    <td>{inv.clientSnapshot.name}</td>
+                    <td className="text-ink-secondary">{formatDate(inv.issueDate)}</td>
+                    <td className="num text-right font-medium">
+                      {formatCurrency(inv.grandTotal, inv.currency, inv.currencySymbol)}
+                    </td>
+                    <td>
+                      <Badge status={inv.status} type="invoice" />
+                    </td>
+                    <td className="text-right" onClick={(e) => e.stopPropagation()}>
+                      {inv.status !== 'paid' && (
+                        <button
+                          onClick={() => openPaymentModal(inv)}
+                          className="text-[14px] text-ink-secondary hover:text-ink"
                         >
-                          <Eye className="w-3.5 h-3.5 text-slate-600" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </Card>
-
-          {/* Recent Quotations */}
-          <Card padding="none">
-            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-indigo-600" />
-                <h3 className="font-semibold text-slate-900 text-sm">Recent Quotations</h3>
-              </div>
-              <button
-                onClick={() => setActiveView('quotations')}
-                className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
-              >
-                <span>View all ({quotations.length})</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            <div className="divide-y divide-slate-100">
-              {recentQuotations.length === 0 ? (
-                <div className="p-6 text-center text-xs text-slate-500">No quotations drafted yet.</div>
-              ) : (
-                recentQuotations.map((quo) => (
-                  <div
-                    key={quo.id}
-                    className="p-4 flex items-center justify-between hover:bg-slate-50/70 transition-colors group"
-                  >
-                    <div className="space-y-1 min-w-0 pr-3">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-bold text-slate-900">
-                          {quo.quotationNumber}
-                        </span>
-                        <Badge status={quo.status} type="quote" size="sm" />
-                      </div>
-                      <p className="text-xs text-slate-600 truncate">
-                        {quo.clientSnapshot.name || 'Unnamed Client'}
-                      </p>
-                      <p className="text-[11px] text-slate-400">Expires {formatDate(quo.expiryDate)}</p>
-                    </div>
-
-                    <div className="flex items-center gap-3 shrink-0">
-                      <div className="text-right">
-                        <p className="text-xs font-bold text-slate-900 font-mono">
-                          {formatCurrency(quo.grandTotal, quo.currency, quo.currencySymbol)}
-                        </p>
-                        <p className="text-[11px] text-slate-500">{quo.items.length} item(s)</p>
-                      </div>
-
-                      <div className="flex items-center gap-1">
-                        {quo.status !== 'declined' && !quo.convertedInvoiceId && (
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            title="Convert to Invoice"
-                            onClick={() => convertQuotationToInvoice(quo.id)}
-                            className="p-1.5"
-                          >
-                            <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600" />
-                          </Button>
-                        )}
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          title="Preview Quote"
-                          onClick={() => openDocumentPreview('quote', quo)}
-                          className="p-1.5"
-                        >
-                          <Eye className="w-3.5 h-3.5 text-slate-600" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </Card>
-        </div>
+                          Record payment
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
       )}
 
-      {/* Recent Clients Section */}
-      <Card padding="none">
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-indigo-600" />
-            <h3 className="font-semibold text-slate-900 text-sm">Active Clients</h3>
+      {recentQuotations.length > 0 && (
+        <section>
+          <div className="mb-2 flex items-end justify-between gap-4">
+            <h2 className="section-title">Recent quotations</h2>
+            <button
+              onClick={() => setActiveView('quotations')}
+              className="text-[15px] text-ink-secondary hover:text-ink"
+            >
+              All quotations
+            </button>
           </div>
-          <button
-            onClick={() => setActiveView('clients')}
-            className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
-          >
-            <span>Client directory ({clients.length})</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
+          <div className="overflow-x-auto">
+            <table className="ledger">
+              <thead>
+                <tr>
+                  <th>Quotation</th>
+                  <th>Client</th>
+                  <th>Issued</th>
+                  <th className="text-right">Amount</th>
+                  <th>Status</th>
+                  <th className="text-right"> </th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentQuotations.map((quo) => (
+                  <tr key={quo.id} onClick={() => openDocumentPreview('quote', quo)} className="cursor-pointer">
+                    <td className="num font-medium">{quo.quotationNumber}</td>
+                    <td>{quo.clientSnapshot.name}</td>
+                    <td className="text-ink-secondary">{formatDate(quo.issueDate)}</td>
+                    <td className="num text-right font-medium">
+                      {formatCurrency(quo.grandTotal, quo.currency, quo.currencySymbol)}
+                    </td>
+                    <td>
+                      <Badge status={quo.status} type="quote" />
+                    </td>
+                    <td className="text-right" onClick={(e) => e.stopPropagation()}>
+                      {quo.status !== 'declined' && !quo.convertedInvoiceId && (
+                        <button
+                          onClick={() => convertQuotationToInvoice(quo.id)}
+                          className="text-[14px] text-ink-secondary hover:text-ink"
+                        >
+                          Convert
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-100">
-          {recentClients.map((client) => {
-            const clientInvoices = invoices.filter((i) => i.clientId === client.id);
-            const clientTotalPaid = clientInvoices.reduce((sum, i) => sum + i.amountPaid, 0);
-
-            return (
-              <div
-                key={client.id}
-                onClick={() => setActiveView('client-detail', client.id)}
-                className="p-4 hover:bg-slate-50/60 cursor-pointer transition-colors"
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-700 font-semibold text-xs shrink-0">
-                    {client.name.charAt(0)}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold text-slate-900 truncate">{client.name}</p>
-                    <p className="text-[11px] text-slate-500 truncate">{client.companyName || client.email}</p>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center text-xs pt-2 border-t border-slate-100 text-slate-500">
-                  <span>{clientInvoices.length} Invoices</span>
-                  <span className="font-mono font-semibold text-slate-800">
-                    {formatCurrency(clientTotalPaid, currency, symbol)}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </Card>
+      {recentClients.length > 0 && (
+        <section>
+          <div className="mb-2 flex items-end justify-between gap-4">
+            <h2 className="section-title">Clients</h2>
+            <button
+              onClick={() => setActiveView('clients')}
+              className="text-[15px] text-ink-secondary hover:text-ink"
+            >
+              All clients
+            </button>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="ledger">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Company</th>
+                  <th className="text-right">Collected</th>
+                  <th className="text-right">Outstanding</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentClients.map((client) => {
+                  const clientInvoices = invoices.filter((i) => i.clientId === client.id);
+                  const clientPaid = clientInvoices.reduce((sum, i) => sum + i.amountPaid, 0);
+                  const clientDue = clientInvoices.reduce((sum, i) => sum + i.outstandingBalance, 0);
+                  return (
+                    <tr
+                      key={client.id}
+                      onClick={() => setActiveView('client-detail', client.id)}
+                      className="cursor-pointer"
+                    >
+                      <td className="font-medium">{client.name}</td>
+                      <td className="text-ink-secondary">{client.companyName || '—'}</td>
+                      <td className="num text-right">{formatCurrency(clientPaid, currency, symbol)}</td>
+                      <td className={`num text-right ${clientDue > 0 ? 'text-[#8E3B32]' : 'text-ink-secondary'}`}>
+                        {clientDue > 0 ? formatCurrency(clientDue, currency, symbol) : 'Clear'}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
     </div>
   );
 };

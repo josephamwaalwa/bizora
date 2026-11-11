@@ -15,36 +15,36 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label htmlFor={inputId} className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-            {label} {props.required && <span className="text-rose-500">*</span>}
+          <label htmlFor={inputId} className="mb-2 block text-[14px] font-medium leading-snug text-ink">
+            {label} {props.required && <span className="text-[#8E3B32]">*</span>}
           </label>
         )}
-        <div className="relative flex rounded-lg shadow-sm">
+        <div className="relative flex">
           {leftAddon && (
-            <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-slate-300 bg-slate-50 text-slate-500 text-sm">
+            <span className="inline-flex h-11 items-center border border-r-0 border-line bg-paper-sunken px-3 text-[15px] text-ink-secondary font-mono">
               {leftAddon}
             </span>
           )}
           <input
             id={inputId}
             ref={ref}
-            className={`block w-full rounded-lg border text-sm transition-colors duration-150 py-2 px-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed ${
-              leftAddon ? 'rounded-l-none' : ''
-            } ${rightAddon ? 'rounded-r-none' : ''} ${
-              error ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-500/20' : 'border-slate-300'
+            className={`block h-11 w-full border bg-white px-3 text-[16px] text-ink transition-colors placeholder:text-ink-muted focus:outline-none focus:border-ink disabled:bg-paper-sunken disabled:text-ink-muted disabled:cursor-not-allowed ${
+              leftAddon ? '' : ''
+            } ${
+              error ? 'border-[#8E3B32] focus:border-[#8E3B32]' : 'border-line'
             } ${className}`}
             {...props}
           />
           {rightAddon && (
-            <span className="inline-flex items-center px-3 rounded-r-lg border border-l-0 border-slate-300 bg-slate-50 text-slate-500 text-sm">
+            <span className="inline-flex h-11 items-center border border-l-0 border-line bg-paper-sunken px-3 text-[15px] text-ink-secondary font-mono">
               {rightAddon}
             </span>
           )}
         </div>
         {error ? (
-          <p className="mt-1 text-xs text-rose-600 font-medium">{error}</p>
+          <p className="mt-1.5 text-[13px] font-medium text-[#8E3B32]">{error}</p>
         ) : helperText ? (
-          <p className="mt-1 text-xs text-slate-500">{helperText}</p>
+          <p className="mt-1.5 text-[13px] text-ink-secondary">{helperText}</p>
         ) : null}
       </div>
     );

@@ -50,35 +50,31 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-navy-950/60 backdrop-blur-sm transition-opacity duration-200"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 bg-ink/50 transition-opacity" onClick={onClose} />
 
-      <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
+      <div className="flex min-h-full items-center justify-center p-4 sm:p-8 text-center">
         <div
-          className={`relative w-full ${widthStyles} transform overflow-hidden rounded-2xl bg-white text-left shadow-modal transition-all my-8 border border-slate-200`}
+          className={`relative w-full ${widthStyles} transform bg-white text-left shadow-modal my-6 border border-line`}
           onClick={(e) => e.stopPropagation()}
         >
           {(title || showCloseButton) && (
-            <div className="flex items-start justify-between border-b border-slate-200 px-6 py-4.5 bg-slate-50/50">
+            <div className="flex items-start justify-between border-b border-line px-6 py-5">
               <div>
-                {title && <h3 className="text-lg font-semibold text-slate-900">{title}</h3>}
-                {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
+                {title && <h3 className="text-[20px] font-semibold tracking-[-0.02em] text-ink">{title}</h3>}
+                {subtitle && <p className="mt-1 text-[14px] text-ink-secondary">{subtitle}</p>}
               </div>
               {showCloseButton && (
                 <button
                   type="button"
                   onClick={onClose}
-                  className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-200/60 hover:text-slate-600 transition-colors"
+                  className="p-1 text-ink-muted hover:text-ink transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
               )}
             </div>
           )}
-          <div className="p-6">{children}</div>
+          <div className="px-6 py-6">{children}</div>
         </div>
       </div>
     </div>

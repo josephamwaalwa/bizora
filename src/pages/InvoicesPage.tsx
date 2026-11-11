@@ -1,23 +1,20 @@
 import React, { useState, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
-import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { Badge } from '../components/common/Badge';
 import { EmptyState } from '../components/common/EmptyState';
+import { PageHeader } from '../components/common/PageHeader';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import type { InvoiceStatus } from '../types';
 import {
   Plus,
   Search,
   Eye,
-  Edit,
+  Edit2,
   Copy,
   Trash2,
   Receipt,
-  DollarSign,
-  AlertCircle,
   CreditCard,
-  CheckCircle2,
 } from 'lucide-react';
 
 export const InvoicesPage: React.FC = () => {
@@ -42,7 +39,6 @@ export const InvoicesPage: React.FC = () => {
 
   const effectiveSearch = (globalSearch || localSearch).trim().toLowerCase();
 
-  // Filter & Sort
   const filteredInvoices = useMemo(() => {
     return invoices
       .filter((inv) => {
@@ -76,7 +72,6 @@ export const InvoicesPage: React.FC = () => {
       });
   }, [invoices, statusFilter, effectiveSearch, sortBy]);
 
-  // Aggregate metrics
   const totalBilled = invoices.reduce((sum, i) => sum + i.grandTotal, 0);
   const totalCollected = invoices.reduce((sum, i) => sum + i.amountPaid, 0);
   const totalOutstanding = invoices.reduce((sum, i) => sum + i.outstandingBalance, 0);
@@ -93,135 +88,99 @@ export const InvoicesPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-bold text-slate-900 tracking-tight">Invoices</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Bill clients, record installment payments, and track overdue accounts in {currency}.
-          </p>
+    <div className="space-y-12">
+      <PageHeader
+        kicker="Receivables"
+        title="Invoices"
+        description={`Issue invoices, record payments, and watch overdue accounts in ${currency}.`}
+        actions={
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => setActiveView('invoice-new')}
+            leftIcon={<Plus className="h-4 w-4" />}
+          >
+            Create invoice
+          </Button>
+        }
+      />
+
+      <div className="grid grid-cols-1 border-y border-line sm:grid-cols-2 xl:grid-cols-4">
+        <div className="py-6 xl:pr-8">
+          <p className="text-[14px] text-ink-secondary">Invoiced</p>
+          <p className="figure-sm mt-3">{formatCurrency(totalBilled, currency, symbol)}</p>
+          <p className="meta mt-2">{invoices.length} invoices</p>
         </div>
-        <Button
-          variant="indigo"
-          size="md"
-          onClick={() => setActiveView('invoice-new')}
-          leftIcon={<Plus className="w-4 h-4" />}
-        >
-          Create Invoice
-        </Button>
+        <div className="border-t border-line py-6 sm:border-t-0 xl:border-l xl:border-line xl:px-8">
+          <p className="text-[14px] text-ink-secondary">Collected</p>
+          <p className="figure-sm mt-3">{formatCurrency(totalCollected, currency, symbol)}</p>
+          <p className="meta mt-2">Settled to date</p>
+        </div>
+        <div className="border-t border-line py-6 sm:border-l sm:border-line sm:pl-8 xl:px-8">
+          <p className="text-[14px] text-ink-secondary">Outstanding</p>
+          <p className="figure-sm mt-3">{formatCurrency(totalOutstanding, currency, symbol)}</p>
+          <p className="meta mt-2">Still to collect</p>
+        </div>
+        <div className="border-t border-line py-6 xl:border-l xl:border-line xl:pl-8">
+          <p className="text-[14px] text-ink-secondary">Overdue</p>
+          <p className={`figure-sm mt-3 ${overdueCount > 0 ? 'text-[#8E3B32]' : ''}`}>{overdueCount}</p>
+          <p className="meta mt-2">Past the due date</p>
+        </div>
       </div>
 
-      {/* Aggregate KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <Card padding="sm" className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-indigo-50 text-indigo-600">
-            <DollarSign className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Total Invoiced</p>
-            <p className="text-lg font-bold text-slate-900 font-mono">
-              {formatCurrency(totalBilled, currency, symbol)}
-            </p>
-          </div>
-        </Card>
-
-        <Card padding="sm" className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-600">
-            <CheckCircle2 className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Collected Revenue</p>
-            <p className="text-lg font-bold text-slate-900 font-mono">
-              {formatCurrency(totalCollected, currency, symbol)}
-            </p>
-          </div>
-        </Card>
-
-        <Card padding="sm" className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-rose-50 text-rose-600">
-            <AlertCircle className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Outstanding Balance</p>
-            <p className="text-lg font-bold text-rose-600 font-mono">
-              {formatCurrency(totalOutstanding, currency, symbol)}
-            </p>
-          </div>
-        </Card>
-
-        <Card padding="sm" className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-amber-50 text-amber-600">
-            <Receipt className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Overdue Invoices</p>
-            <p className="text-lg font-bold text-slate-900">
-              {overdueCount} <span className="text-xs font-normal text-slate-500">accounts</span>
-            </p>
-          </div>
-        </Card>
-      </div>
-
-      {/* Filter Tabs & Search Controls */}
-      <Card padding="sm" className="space-y-3">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-          {/* Status Tabs */}
-          <div className="flex items-center gap-1 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
-            {[
-              { id: 'all', label: 'All' },
-              { id: 'draft', label: 'Draft' },
-              { id: 'sent', label: 'Sent' },
-              { id: 'partially_paid', label: 'Partially Paid' },
-              { id: 'paid', label: 'Paid' },
-              { id: 'overdue', label: 'Overdue' },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setStatusFilter(tab.id as any)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
-                  statusFilter === tab.id
-                    ? 'bg-navy-900 text-white shadow-subtle'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Search & Sort Controls */}
-          <div className="flex items-center gap-2">
-            <div className="relative flex-1 sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                value={localSearch}
-                onChange={(e) => setLocalSearch(e.target.value)}
-                placeholder="Search invoices or items..."
-                className="w-full text-xs rounded-lg border border-slate-300 pl-9 pr-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600"
-              />
-            </div>
-
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              className="text-xs rounded-lg border border-slate-300 py-1.5 px-2 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+      <div className="flex flex-col gap-4 border-b border-line pb-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center gap-5 overflow-x-auto">
+          {[
+            { id: 'all', label: 'All' },
+            { id: 'draft', label: 'Draft' },
+            { id: 'sent', label: 'Sent' },
+            { id: 'partially_paid', label: 'Partial' },
+            { id: 'paid', label: 'Paid' },
+            { id: 'overdue', label: 'Overdue' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setStatusFilter(tab.id as any)}
+              className={`whitespace-nowrap border-b-2 pb-1 text-[15px] ${
+                statusFilter === tab.id
+                  ? 'border-ink font-medium text-ink'
+                  : 'border-transparent text-ink-secondary hover:text-ink'
+              }`}
             >
-              <option value="date-desc">Newest Date</option>
-              <option value="date-asc">Oldest Date</option>
-              <option value="amount-desc">Highest Total</option>
-              <option value="balance-desc">Highest Balance Due</option>
-              <option value="number">Doc Number</option>
-            </select>
-          </div>
+              {tab.label}
+            </button>
+          ))}
         </div>
-      </Card>
 
-      {/* Invoices Table */}
+        <div className="flex items-center gap-3">
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted" />
+            <input
+              type="text"
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              placeholder="Search invoices"
+              className="field pl-10"
+            />
+          </div>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as any)}
+            className="field w-auto"
+          >
+            <option value="date-desc">Newest</option>
+            <option value="date-asc">Oldest</option>
+            <option value="amount-desc">Highest total</option>
+            <option value="balance-desc">Highest balance</option>
+            <option value="number">Document number</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Invoices Ledger Table */}
       {filteredInvoices.length === 0 ? (
         <EmptyState
-          icon={<Receipt className="w-8 h-8" />}
+          icon={<Receipt className="h-6 w-6" />}
           title={invoices.length === 0 ? 'No invoices issued yet' : 'No matching invoices found'}
           description={
             invoices.length === 0
@@ -232,110 +191,112 @@ export const InvoicesPage: React.FC = () => {
           onAction={() => setActiveView('invoice-new')}
         />
       ) : (
-        <Card padding="none" className="overflow-hidden">
+        <div className="border border-slate-200/80 rounded-md bg-white shadow-subtle overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
-                  <th className="py-3 px-4">Invoice #</th>
-                  <th className="py-3 px-4">Client</th>
-                  <th className="py-3 px-4">Issue Date</th>
-                  <th className="py-3 px-4">Due Date</th>
-                  <th className="py-3 px-4 text-right">Total Amount</th>
-                  <th className="py-3 px-4 text-right">Balance Due</th>
-                  <th className="py-3 px-4 text-center">Status</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
+                <tr className="bg-slate-50/70 border-b border-slate-200 text-slate-500 text-[10px] uppercase tracking-wider font-semibold">
+                  <th className="py-2.5 px-4 font-normal">Invoice #</th>
+                  <th className="py-2.5 px-4 font-normal">Client</th>
+                  <th className="py-2.5 px-3 font-normal">Issue Date</th>
+                  <th className="py-2.5 px-3 font-normal">Due Date</th>
+                  <th className="py-2.5 px-4 font-normal text-right">Total</th>
+                  <th className="py-2.5 px-4 font-normal text-right">Balance Due</th>
+                  <th className="py-2.5 px-3 font-normal text-center">Status</th>
+                  <th className="py-2.5 px-4 font-normal text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {filteredInvoices.map((inv) => (
                   <tr
                     key={inv.id}
-                    className="hover:bg-slate-50/70 transition-colors group cursor-pointer"
+                    className="hover:bg-slate-50/60 transition-colors cursor-pointer"
                     onClick={() => openDocumentPreview('invoice', inv)}
                   >
-                    <td className="py-3.5 px-4 font-mono font-bold text-slate-900">
+                    <td className="py-3 px-4 font-mono font-bold text-slate-900">
                       {inv.invoiceNumber}
                     </td>
 
-                    <td className="py-3.5 px-4">
+                    <td className="py-3 px-4">
                       <div className="font-semibold text-slate-800">{inv.clientSnapshot.name}</div>
                       {inv.clientSnapshot.companyName && (
                         <div className="text-[11px] text-slate-500">{inv.clientSnapshot.companyName}</div>
                       )}
                     </td>
 
-                    <td className="py-3.5 px-4 text-slate-600">{formatDate(inv.issueDate)}</td>
+                    <td className="py-3 px-3 text-slate-600 font-mono text-[11px]">
+                      {formatDate(inv.issueDate)}
+                    </td>
 
-                    <td className="py-3.5 px-4 text-slate-600">
-                      <span className={inv.status === 'overdue' ? 'text-rose-600 font-semibold' : ''}>
+                    <td className="py-3 px-3 text-slate-600 font-mono text-[11px]">
+                      <span className={inv.status === 'overdue' ? 'text-rose-800 font-semibold' : ''}>
                         {formatDate(inv.dueDate)}
                       </span>
                     </td>
 
-                    <td className="py-3.5 px-4 text-right font-mono font-bold text-slate-900">
+                    <td className="py-3 px-4 text-right font-mono font-medium text-slate-900">
                       {formatCurrency(inv.grandTotal, inv.currency, inv.currencySymbol)}
                     </td>
 
-                    <td className="py-3.5 px-4 text-right font-mono">
+                    <td className="py-3 px-4 text-right font-mono font-bold">
                       {inv.status === 'paid' ? (
-                        <span className="text-emerald-600 font-semibold">Settled</span>
+                        <span className="text-slate-400 font-normal">Settled</span>
                       ) : (
-                        <span className="font-bold text-rose-600">
+                        <span className="text-slate-900">
                           {formatCurrency(inv.outstandingBalance, inv.currency, inv.currencySymbol)}
                         </span>
                       )}
                     </td>
 
-                    <td className="py-3.5 px-4 text-center">
+                    <td className="py-3 px-3 text-center">
                       <Badge status={inv.status} type="invoice" size="sm" />
                     </td>
 
                     <td
-                      className="py-3.5 px-4 text-right"
+                      className="py-3 px-4 text-right"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <div className="flex items-center justify-end gap-1">
                         {inv.status !== 'paid' && (
                           <button
                             onClick={() => openPaymentModal(inv)}
-                            className="p-1.5 text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+                            className="p-1 text-slate-500 hover:text-emerald-700 transition-colors rounded"
                             title="Record Payment"
                           >
-                            <CreditCard className="w-4 h-4" />
+                            <CreditCard className="w-3.5 h-3.5" />
                           </button>
                         )}
 
                         <button
                           onClick={() => openDocumentPreview('invoice', inv)}
-                          className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
-                          title="View / Print Document"
+                          className="p-1 text-slate-400 hover:text-slate-800 transition-colors rounded"
+                          title="Inspect Document"
                         >
-                          <Eye className="w-4 h-4" />
+                          <Eye className="w-3.5 h-3.5" />
                         </button>
 
                         <button
                           onClick={() => setActiveView('invoice-edit', inv.id)}
-                          className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+                          className="p-1 text-slate-400 hover:text-slate-800 transition-colors rounded"
                           title="Edit Invoice"
                         >
-                          <Edit className="w-4 h-4" />
+                          <Edit2 className="w-3.5 h-3.5" />
                         </button>
 
                         <button
                           onClick={() => duplicateInvoice(inv.id)}
-                          className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+                          className="p-1 text-slate-400 hover:text-slate-800 transition-colors rounded"
                           title="Duplicate Invoice"
                         >
-                          <Copy className="w-4 h-4" />
+                          <Copy className="w-3.5 h-3.5" />
                         </button>
 
                         <button
                           onClick={() => handleDelete(inv.id, inv.invoiceNumber)}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                          className="p-1 text-slate-400 hover:text-rose-700 transition-colors rounded"
                           title="Delete Invoice"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </td>
@@ -344,7 +305,7 @@ export const InvoicesPage: React.FC = () => {
               </tbody>
             </table>
           </div>
-        </Card>
+        </div>
       )}
     </div>
   );
