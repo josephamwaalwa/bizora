@@ -500,7 +500,7 @@ export const QuotationFormPage: React.FC = () => {
                       <span className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 font-sans">
                         Line Total
                       </span>
-                      <div className="h-8 flex items-center px-2.5 rounded border border-slate-200 bg-slate-100 text-slate-800 font-mono font-bold text-xs">
+                      <div className="money h-8 flex items-center px-2.5 rounded border border-slate-200 bg-slate-100 text-slate-800 font-bold text-xs">
                         {formatCurrency(item.total, currency, currencySymbol)}
                       </div>
                     </div>
@@ -665,7 +665,7 @@ export const QuotationFormPage: React.FC = () => {
             <div className="pt-3 border-t border-slate-200 space-y-1.5 text-xs">
               <div className="flex justify-between text-slate-600">
                 <span>Subtotal</span>
-                <span className="font-mono font-medium">
+                <span className="money font-medium">
                   {formatCurrency(financials.subtotal, currency, currencySymbol)}
                 </span>
               </div>
@@ -673,7 +673,7 @@ export const QuotationFormPage: React.FC = () => {
               {financials.discountAmount > 0 && (
                 <div className="flex justify-between text-slate-700">
                   <span>Discount</span>
-                  <span className="font-mono">
+                  <span className="money">
                     - {formatCurrency(financials.discountAmount, currency, currencySymbol)}
                   </span>
                 </div>
@@ -684,7 +684,7 @@ export const QuotationFormPage: React.FC = () => {
                   <span>
                     {taxName} ({taxRate}%)
                   </span>
-                  <span className="font-mono font-medium">
+                  <span className="money font-medium">
                     {formatCurrency(financials.taxAmount, currency, currencySymbol)}
                   </span>
                 </div>
@@ -692,7 +692,7 @@ export const QuotationFormPage: React.FC = () => {
 
               <div className="pt-2 border-t border-slate-900 flex justify-between items-baseline text-slate-900">
                 <span className="font-bold text-xs uppercase tracking-wider">Grand Total</span>
-                <span className="font-mono font-extrabold text-base">
+                <span className="money font-extrabold text-base">
                   {formatCurrency(financials.grandTotal, currency, currencySymbol)}
                 </span>
               </div>

@@ -60,23 +60,26 @@
 }
 
 .figure {
-  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: Geist, Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 32px;
   line-height: 1.05;
   font-weight: 500;
-  letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
   color: #1E293B;
 }
 
 .figure-sm {
-  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: Geist, Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 22px;
   line-height: 1.1;
   font-weight: 500;
-  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
   color: #1E293B;
+}
+
+.money {
+  font-family: Geist, Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-variant-numeric: tabular-nums;
 }
 
 .meta {
@@ -95,6 +98,40 @@
   font-size: 16px;
   line-height: 1.4;
   color: #1E293B;
+}
+
+.search-field {
+  padding-left: 48px;
+}
+
+.settings-form .grid {
+  row-gap: 20px;
+}
+
+.settings-form label.block {
+  margin-bottom: 10px;
+}
+
+.settings-form input:not([type="checkbox"]):not([type="file"]):not(:disabled),
+.settings-form select:not(:disabled),
+.settings-form textarea:not(:disabled) {
+  border-color: #CBD5E1;
+  border-radius: 4px;
+  background-color: #F8FAFC;
+}
+
+.settings-form input:not([type="checkbox"]):not([type="file"]):not(:disabled):hover,
+.settings-form select:not(:disabled):hover,
+.settings-form textarea:not(:disabled):hover {
+  border-color: #94A3B8;
+}
+
+.settings-form input:not([type="checkbox"]):not([type="file"]):focus,
+.settings-form select:focus,
+.settings-form textarea:focus {
+  border-color: #4F46E5;
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(79 70 229 / 14%);
 }
 
 .field::placeholder {

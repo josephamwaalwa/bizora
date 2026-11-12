@@ -165,7 +165,7 @@ export const ClientDetailPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/80">
           <div className="p-4">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Total Invoiced</span>
-            <p className="text-xl font-bold text-slate-900 font-mono mt-1">
+            <p className="money text-xl font-bold text-slate-900 mt-1">
               {formatCurrency(totalInvoiced, currency, symbol)}
             </p>
             <p className="text-[11px] text-slate-500 mt-0.5">{clientInvoices.length} invoices</p>
@@ -173,7 +173,7 @@ export const ClientDetailPage: React.FC = () => {
 
           <div className="p-4">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Collected Cash</span>
-            <p className="text-xl font-bold text-slate-900 font-mono mt-1">
+            <p className="money text-xl font-bold text-slate-900 mt-1">
               {formatCurrency(totalPaid, currency, symbol)}
             </p>
             <p className="text-[11px] text-slate-500 mt-0.5">Settled to date</p>
@@ -181,7 +181,7 @@ export const ClientDetailPage: React.FC = () => {
 
           <div className="p-4">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Outstanding Due</span>
-            <p className="text-xl font-bold font-mono mt-1 text-slate-900">
+            <p className="money text-xl font-bold mt-1 text-slate-900">
               {formatCurrency(totalOutstanding, currency, symbol)}
             </p>
             <p className="text-[11px] text-slate-500 mt-0.5">Pending collection</p>
@@ -189,7 +189,7 @@ export const ClientDetailPage: React.FC = () => {
 
           <div className="p-4">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Quoted Proposals</span>
-            <p className="text-xl font-bold text-slate-900 font-mono mt-1">
+            <p className="money text-xl font-bold text-slate-900 mt-1">
               {formatCurrency(totalQuoted, currency, symbol)}
             </p>
             <p className="text-[11px] text-slate-500 mt-0.5">{clientQuotes.length} quotations</p>
@@ -257,14 +257,14 @@ export const ClientDetailPage: React.FC = () => {
                       </td>
                       <td className="py-3 px-3 text-slate-600 font-mono text-[11px]">{formatDate(inv.issueDate)}</td>
                       <td className="py-3 px-3 text-slate-600 font-mono text-[11px]">{formatDate(inv.dueDate)}</td>
-                      <td className="py-3 px-4 text-right font-mono font-medium text-slate-900">
+                      <td className="money py-3 px-4 text-right font-medium text-slate-900">
                         {formatCurrency(inv.grandTotal, inv.currency, inv.currencySymbol)}
                       </td>
-                      <td className="py-3 px-4 text-right font-mono font-bold">
+                      <td className="money py-3 px-4 text-right font-bold">
                         {inv.status === 'paid' ? (
                           <span className="text-slate-400 font-normal">Settled</span>
                         ) : (
-                          <span className="text-slate-900">
+                          <span className="money text-slate-900">
                             {formatCurrency(inv.outstandingBalance, inv.currency, inv.currencySymbol)}
                           </span>
                         )}
@@ -336,7 +336,7 @@ export const ClientDetailPage: React.FC = () => {
                       </td>
                       <td className="py-3 px-3 text-slate-600 font-mono text-[11px]">{formatDate(quo.issueDate)}</td>
                       <td className="py-3 px-3 text-slate-600 font-mono text-[11px]">{formatDate(quo.expiryDate)}</td>
-                      <td className="py-3 px-4 text-right font-mono font-medium text-slate-900">
+                      <td className="money py-3 px-4 text-right font-medium text-slate-900">
                         {formatCurrency(quo.grandTotal, quo.currency, quo.currencySymbol)}
                       </td>
                       <td className="py-3 px-3 text-center">

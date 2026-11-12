@@ -178,7 +178,7 @@ export const DashboardPage: React.FC = () => {
                     <td className="num font-medium">{inv.invoiceNumber}</td>
                     <td>{inv.clientSnapshot.name}</td>
                     <td className="text-ink-secondary">{formatDate(inv.issueDate)}</td>
-                    <td className="num text-right font-medium">
+                    <td className="money text-right font-medium">
                       {formatCurrency(inv.grandTotal, inv.currency, inv.currencySymbol)}
                     </td>
                     <td>
@@ -231,7 +231,7 @@ export const DashboardPage: React.FC = () => {
                     <td className="num font-medium">{quo.quotationNumber}</td>
                     <td>{quo.clientSnapshot.name}</td>
                     <td className="text-ink-secondary">{formatDate(quo.issueDate)}</td>
-                    <td className="num text-right font-medium">
+                    <td className="money text-right font-medium">
                       {formatCurrency(quo.grandTotal, quo.currency, quo.currencySymbol)}
                     </td>
                     <td>
@@ -289,8 +289,8 @@ export const DashboardPage: React.FC = () => {
                     >
                       <td className="font-medium">{client.name}</td>
                       <td className="text-ink-secondary">{client.companyName || '—'}</td>
-                      <td className="num text-right">{formatCurrency(clientPaid, currency, symbol)}</td>
-                      <td className={`num text-right ${clientDue > 0 ? 'text-[#8E3B32]' : 'text-ink-secondary'}`}>
+                      <td className="money text-right">{formatCurrency(clientPaid, currency, symbol)}</td>
+                      <td className={`money text-right ${clientDue > 0 ? 'text-[#8E3B32]' : 'text-ink-secondary'}`}>
                         {clientDue > 0 ? formatCurrency(clientDue, currency, symbol) : 'Clear'}
                       </td>
                     </tr>

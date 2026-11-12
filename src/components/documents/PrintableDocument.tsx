@@ -162,10 +162,10 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document, 
                   {item.description}
                 </td>
                 <td className="py-3 px-3 text-right text-slate-700 font-mono text-xs">{item.quantity}</td>
-                <td className="py-3 px-3 text-right text-slate-700 font-mono text-xs">
+                <td className="money py-3 px-3 text-right text-slate-700 text-xs">
                   {formatCurrency(item.unitPrice, document.currency, document.currencySymbol).replace(document.currencySymbol, '').trim()}
                 </td>
-                <td className="py-3 px-2 text-right font-semibold text-slate-900 font-mono text-xs">
+                <td className="money py-3 px-2 text-right font-semibold text-slate-900 text-xs">
                   {formatCurrency(item.total, document.currency, document.currencySymbol).replace(document.currencySymbol, '').trim()}
                 </td>
               </tr>
@@ -229,7 +229,7 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document, 
         <div className="w-full sm:w-72 space-y-2 text-xs">
           <div className="flex justify-between py-1 text-slate-600">
             <span>Subtotal</span>
-            <span className="font-mono font-medium text-slate-800">
+            <span className="money font-medium text-slate-800">
               {formatCurrency(document.subtotal, document.currency, document.currencySymbol)}
             </span>
           </div>
@@ -239,7 +239,7 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document, 
               <span>
                 Discount {document.discountType === 'percentage' ? `(${document.discountValue}%)` : ''}
               </span>
-              <span className="font-mono font-medium">
+              <span className="money font-medium">
                 - {formatCurrency(document.discountAmount, document.currency, document.currencySymbol)}
               </span>
             </div>
@@ -250,7 +250,7 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document, 
               <span>
                 {document.taxName || 'Tax'} ({document.taxRate}%)
               </span>
-              <span className="font-mono font-medium text-slate-800">
+              <span className="money font-medium text-slate-800">
                 {formatCurrency(document.taxAmount, document.currency, document.currencySymbol)}
               </span>
             </div>
@@ -259,7 +259,7 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document, 
           {/* Grand Total */}
           <div className="flex justify-between py-2 border-t border-b-2 border-slate-900 text-sm font-bold text-slate-900">
             <span className="uppercase tracking-wider">Total</span>
-            <span className="font-mono text-base font-extrabold">
+            <span className="money text-base font-extrabold">
               {formatCurrency(document.grandTotal, document.currency, document.currencySymbol)}
             </span>
           </div>
@@ -269,13 +269,13 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document, 
             <div className="pt-2 space-y-1.5">
               <div className="flex justify-between py-0.5 text-slate-600">
                 <span>Amount Paid</span>
-                <span className="font-mono font-medium text-slate-800">
+                <span className="money font-medium text-slate-800">
                   {formatCurrency(invoice?.amountPaid || 0, document.currency, document.currencySymbol)}
                 </span>
               </div>
               <div className="flex justify-between py-1.5 border-t border-slate-300 font-bold text-slate-900">
                 <span className="uppercase tracking-wider text-xs">Balance Due</span>
-                <span className="font-mono text-base font-extrabold text-slate-900">
+                <span className="money text-base font-extrabold text-slate-900">
                   {formatCurrency(invoice?.outstandingBalance || 0, document.currency, document.currencySymbol)}
                 </span>
               </div>

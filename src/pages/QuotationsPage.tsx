@@ -226,7 +226,7 @@ export const QuotationsPage: React.FC = () => {
                       {formatDate(quo.expiryDate)}
                     </td>
 
-                    <td className="num text-right font-medium">
+                    <td className="money text-right font-medium">
                       {formatCurrency(quo.grandTotal, quo.currency, quo.currencySymbol)}
                     </td>
 

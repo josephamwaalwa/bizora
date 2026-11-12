@@ -104,7 +104,7 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenMobileSidebar }) => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search documents or clients"
-            className="field pl-10"
+            className="field search-field"
           />
           {searchQuery && (
             <button
@@ -214,12 +214,21 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenMobileSidebar }) => {
           <button
             onClick={() => setShowProfileMenu(!showProfileMenu)}
             className="flex items-center gap-3 py-1 pl-1"
+            title={businessProfile.name}
           >
-            <span className="hidden max-w-[160px] truncate text-[15px] text-ink sm:inline">
+            <span className="hidden max-w-[200px] truncate text-[15px] text-ink sm:inline">
               {businessProfile.name}
             </span>
-            <div className="flex h-9 w-9 items-center justify-center bg-ink text-[14px] font-medium text-white">
-              {businessProfile.name.charAt(0) || 'B'}
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-ink text-[14px] font-medium text-white">
+              {businessProfile.logoUrl ? (
+                <img
+                  src={businessProfile.logoUrl}
+                  alt={`${businessProfile.name} logo`}
+                  className="h-full w-full rounded-full bg-white p-1 object-contain"
+                />
+              ) : (
+                businessProfile.name.charAt(0) || 'B'
+              )}
             </div>
           </button>
 

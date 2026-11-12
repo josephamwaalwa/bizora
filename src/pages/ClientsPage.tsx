@@ -260,7 +260,7 @@ export const ClientsPage: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="text-right font-mono">
+                  <div className="money text-right">
                     {totalClientDue > 0 ? (
                       <span className="text-xs font-bold text-slate-900">
                         Due: {formatCurrency(totalClientDue, currency, symbol)}

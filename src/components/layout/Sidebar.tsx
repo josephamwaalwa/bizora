@@ -173,8 +173,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
             onClick={() => handleNavClick('settings')}
             className={`flex cursor-pointer items-center gap-3 ${isCollapsed ? 'justify-center' : ''}`}
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-white/10 text-[14px] font-medium text-white">
-              {businessProfile.name.charAt(0) || 'B'}
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-[14px] font-medium text-white">
+              {businessProfile.logoUrl ? (
+                <img
+                  src={businessProfile.logoUrl}
+                  alt={`${businessProfile.name} logo`}
+                  className="h-full w-full rounded-full bg-white p-1 object-contain"
+                />
+              ) : (
+                businessProfile.name.charAt(0) || 'B'
+              )}
             </div>
             {!isCollapsed && (
               <div className="min-w-0 flex-1">

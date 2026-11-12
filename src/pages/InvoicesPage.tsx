@@ -234,11 +234,11 @@ export const InvoicesPage: React.FC = () => {
                       </span>
                     </td>
 
-                    <td className="py-3 px-4 text-right font-mono font-medium text-slate-900">
+                    <td className="money py-3 px-4 text-right font-medium text-slate-900">
                       {formatCurrency(inv.grandTotal, inv.currency, inv.currencySymbol)}
                     </td>
 
-                    <td className="py-3 px-4 text-right font-mono font-bold">
+                    <td className="money py-3 px-4 text-right font-bold">
                       {inv.status === 'paid' ? (
                         <span className="text-slate-400 font-normal">Settled</span>
                       ) : (

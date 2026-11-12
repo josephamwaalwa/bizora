@@ -63,13 +63,13 @@ export const RecordPaymentModal: React.FC = () => {
         <div className="rounded border border-slate-200 bg-slate-50/70 p-3.5 flex justify-between items-center text-xs">
           <div>
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Total Invoiced</span>
-            <span className="font-mono font-semibold text-slate-800 text-sm">
+            <span className="money font-semibold text-slate-800 text-sm">
               {formatCurrency(invoice.grandTotal, invoice.currency, invoice.currencySymbol)}
             </span>
           </div>
           <div className="text-right">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Balance Outstanding</span>
-            <span className="font-mono font-bold text-sm text-slate-900">
+            <span className="money font-bold text-sm text-slate-900">
               {formatCurrency(balance, invoice.currency, invoice.currencySymbol)}
             </span>
           </div>

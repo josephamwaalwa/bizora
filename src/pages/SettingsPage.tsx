@@ -148,7 +148,7 @@ export const SettingsPage: React.FC = () => {
         </Button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="settings-form space-y-6">
         {/* 1. Brand & Business Profile */}
         <Card padding="md" className="space-y-5">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
