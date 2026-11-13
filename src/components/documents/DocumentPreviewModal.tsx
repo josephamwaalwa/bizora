@@ -183,7 +183,7 @@ export const DocumentPreviewModal: React.FC = () => {
       </div>
 
       {/* Desk Preview Container */}
-      <div className="py-8 sm:py-12 px-3 sm:px-6 flex justify-center bg-slate-200/60 print:bg-white print:p-0">
+      <div className="document-preview-sheet py-8 sm:py-12 px-3 sm:px-6 flex justify-center bg-slate-200/60 print:bg-white print:p-0">
         <PrintableDocument document={data} type={type} />
       </div>
     </div>

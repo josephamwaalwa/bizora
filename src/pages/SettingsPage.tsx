@@ -7,6 +7,7 @@ import { Select } from '../components/common/Select';
 import { Textarea } from '../components/common/Textarea';
 import type { BusinessProfile, CurrencyCode } from '../types';
 import { StorageService } from '../services/storage';
+import { getLogoOptions } from '../utils/logo';
 import {
   Building2,
   Upload,
@@ -35,6 +36,7 @@ export const SettingsPage: React.FC = () => {
 
   const [profile, setProfile] = useState<BusinessProfile>({ ...businessProfile });
   const [logoPreview, setLogoPreview] = useState<string>(businessProfile.logoUrl || '');
+  const logoOptions = getLogoOptions(profile);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const importFileRef = useRef<HTMLInputElement>(null);
 
@@ -65,7 +67,7 @@ export const SettingsPage: React.FC = () => {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const handleChange = (field: keyof BusinessProfile, value: any) => {
+  const handleChange = <K extends keyof BusinessProfile,>(field: K, value: BusinessProfile[K]) => {
     setProfile((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -163,9 +165,27 @@ export const SettingsPage: React.FC = () => {
 
           {/* Logo Upload Section */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-5 p-4 rounded-xl border border-slate-200 bg-slate-50/50">
-            <div className="flex h-20 w-36 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white overflow-hidden shadow-subtle shrink-0">
+            <div className="flex h-20 w-36 items-center justify-center overflow-hidden shrink-0">
               {logoPreview ? (
-                <img src={logoPreview} alt="Logo" className="h-full w-full object-contain p-1" />
+                <span
+                  className="flex max-h-full max-w-full items-center justify-center"
+                  style={{
+                    width: `${logoOptions.size}px`,
+                    height: `${Math.min(logoOptions.size, 64)}px`,
+                    padding: `${logoOptions.padding}px`,
+                    backgroundColor: logoOptions.backgroundColor,
+                  }}
+                >
+                  <img
+                    src={logoPreview}
+                    alt="Logo"
+                    className="h-full w-full"
+                    style={{
+                      objectFit: logoOptions.fit,
+                      objectPosition: `${logoOptions.alignment} center`,
+                    }}
+                  />
+                </span>
               ) : (
                 <span className="text-xs text-slate-400 font-medium">No Logo</span>
               )}
@@ -207,6 +227,67 @@ export const SettingsPage: React.FC = () => {
                 )}
               </div>
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Input
+              label="Logo size (px)"
+              type="number"
+              min="40"
+              max="220"
+              step="4"
+              value={logoOptions.size}
+              onChange={(e) => handleChange('logoSize', Number(e.target.value))}
+              helperText="Controls the maximum width in document headers."
+            />
+            <Select
+              label="Logo fitting"
+              value={logoOptions.fit}
+              onChange={(e) => handleChange('logoFit', e.target.value as 'contain' | 'cover')}
+              options={[
+                { value: 'contain', label: 'Contain (show full logo)' },
+                { value: 'cover', label: 'Cover (fill logo area)' },
+              ]}
+            />
+            <Select
+              label="Logo alignment"
+              value={logoOptions.alignment}
+              onChange={(e) => handleChange('logoAlignment', e.target.value as 'left' | 'center' | 'right')}
+              options={[
+                { value: 'left', label: 'Left' },
+                { value: 'center', label: 'Center' },
+                { value: 'right', label: 'Right' },
+              ]}
+            />
+            <Input
+              label="Logo padding (px)"
+              type="number"
+              min="0"
+              max="24"
+              step="1"
+              value={logoOptions.padding}
+              onChange={(e) => handleChange('logoPadding', Number(e.target.value))}
+              helperText="Space inside the logo area, without adding a border."
+            />
+            <label className="flex items-center gap-2 self-end pb-3 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                checked={profile.logoBackgroundTransparent ?? true}
+                onChange={(e) => handleChange('logoBackgroundTransparent', e.target.checked)}
+                className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              Transparent logo background
+            </label>
+            <label className="block text-sm font-medium text-slate-700">
+              Logo background colour
+              <input
+                type="color"
+                value={profile.logoBackgroundColor || '#ffffff'}
+                onChange={(e) => handleChange('logoBackgroundColor', e.target.value)}
+                disabled={profile.logoBackgroundTransparent ?? true}
+                className="mt-2 block h-11 w-full rounded border border-slate-300 bg-white p-1 disabled:opacity-50"
+              />
+            </label>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

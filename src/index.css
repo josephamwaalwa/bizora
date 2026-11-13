@@ -243,6 +243,24 @@
     print-color-adjust: exact !important;
   }
 
+  html, body, #root {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .app-layout-root {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    background: #FFFFFF !important;
+  }
+
+  .app-layout-content {
+    display: none !important;
+  }
+
   .no-print,
   nav,
   aside,
@@ -257,11 +275,22 @@
   }
 
   .document-preview-backdrop {
+    display: block !important;
     position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
     background: transparent !important;
     padding: 0 !important;
     margin: 0 !important;
     overflow: visible !important;
+  }
+
+  .document-preview-sheet {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #FFFFFF !important;
   }
 
   .print-document-container {
@@ -286,5 +315,402 @@
   .page-break-inside-avoid {
     page-break-inside: avoid;
     break-inside: avoid;
+  }
+}
+
+.quote-document-container {
+  box-sizing: border-box;
+  width: 210mm;
+  max-width: 100%;
+  min-height: 297mm;
+  padding: 14mm 15mm;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.quote-print-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.quote-col-number { width: 5%; }
+.quote-col-description { width: 50%; }
+.quote-col-quantity { width: 9%; }
+.quote-col-unit-price { width: 18%; }
+.quote-col-total { width: 18%; }
+
+.quote-letterhead-cell {
+  padding: 0 0 18px;
+  vertical-align: top;
+}
+
+.quote-letterhead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.quote-business-identity {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.quote-logo-box {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.quote-logo-box img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.quote-business-details {
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.quote-business-details h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+
+.quote-tagline {
+  margin: 3px 0 7px;
+  color: #475569;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.quote-contact-details,
+.quote-client-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  color: #475569;
+  font-size: 9px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.quote-reference {
+  flex: 0 0 31%;
+  text-align: right;
+}
+
+.quote-document-title {
+  margin: 0;
+  color: #0f172a;
+  font-size: 22px;
+  font-weight: 750;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.quote-document-number {
+  margin: 4px 0 10px;
+  color: #334155;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.quote-reference dl {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  font-size: 9px;
+}
+
+.quote-reference dl div {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.quote-reference dt,
+.quote-section-label,
+.quote-extra-section h2,
+.quote-terms h2 {
+  color: #64748b;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.quote-reference dd {
+  min-width: 76px;
+  margin: 0;
+  color: #1e293b;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 600;
+}
+
+.quote-column-headings {
+  border-top: 2px solid #0f172a;
+  border-bottom: 1px solid #0f172a;
+  color: #334155;
+}
+
+.quote-column-headings th {
+  padding: 9px 7px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-align: right;
+  text-transform: uppercase;
+  vertical-align: bottom;
+}
+
+.quote-column-headings th:first-child,
+.quote-column-headings th:nth-child(2) {
+  text-align: left;
+}
+
+.quote-recipient-row td {
+  padding: 15px 7px 14px;
+  border-bottom: 1px solid #cbd5e1;
+  vertical-align: top;
+}
+
+.quote-section-label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.quote-client-details strong {
+  color: #0f172a;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.quote-client-details span {
+  color: #475569;
+}
+
+.quote-client-details span:last-child {
+  color: #334155;
+}
+
+.quote-item-row {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.quote-item-row td {
+  padding: 11px 7px;
+  vertical-align: top;
+}
+
+.quote-item-number {
+  color: #64748b;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 9px;
+}
+
+.quote-item-description {
+  color: #1e293b;
+  font-size: 10px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.quote-item-quantity,
+.quote-item-amount {
+  color: #334155;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.quote-item-total {
+  color: #0f172a;
+  font-weight: 650;
+}
+
+.quote-summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 28px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #cbd5e1;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.quote-notes-and-payment {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 0;
+}
+
+.quote-extra-section h2,
+.quote-terms h2 {
+  margin: 0 0 5px;
+}
+
+.quote-extra-section p,
+.quote-terms p {
+  margin: 0;
+  color: #475569;
+  font-size: 9px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.quote-bank-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px 14px;
+  margin: 0;
+  font-size: 9px;
+}
+
+.quote-bank-details div {
+  min-width: 0;
+}
+
+.quote-bank-details dt {
+  color: #64748b;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.quote-bank-details dd {
+  margin: 1px 0 0;
+  color: #1e293b;
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+
+.quote-totals {
+  flex: 0 0 40%;
+  font-size: 10px;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.quote-totals > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 0;
+  color: #475569;
+}
+
+.quote-totals strong {
+  color: #1e293b;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.quote-totals .quote-grand-total {
+  margin-top: 5px;
+  padding: 9px 0;
+  border-top: 1px solid #0f172a;
+  border-bottom: 2px solid #0f172a;
+  color: #0f172a;
+  font-size: 11px;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.quote-totals .quote-grand-total strong {
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.quote-terms {
+  margin-top: 22px;
+  padding-top: 13px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.quote-signatures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid #e2e8f0;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.quote-signatures > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  color: #64748b;
+  font-size: 9px;
+}
+
+.quote-signatures > div:last-child {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.quote-signature-line {
+  width: min(100%, 190px);
+  height: 34px;
+  margin-bottom: 3px;
+  border-bottom: 1px solid #94a3b8;
+}
+
+.quote-signatures strong {
+  color: #1e293b;
+  font-size: 9px;
+}
+
+@media print {
+  .quote-document-container {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    font-size: 9pt;
+  }
+
+  .quote-print-table thead {
+    display: table-header-group;
+  }
+
+  .quote-print-table tr,
+  .quote-recipient-row,
+  .quote-item-row {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .quote-signatures {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }

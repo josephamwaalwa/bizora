@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { formatRelativeTime } from '../../utils/formatters';
+import { getLogoOptions } from '../../utils/logo';
 
 interface TopBarProps {
   onOpenMobileSidebar: () => void;
@@ -32,6 +33,7 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenMobileSidebar }) => {
     resetToDemoData,
     showConfirmDialog,
   } = useApp();
+  const logoOptions = getLogoOptions(businessProfile);
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [showQuickCreate, setShowQuickCreate] = useState(false);
@@ -219,12 +221,24 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenMobileSidebar }) => {
             <span className="hidden max-w-[200px] truncate text-[15px] text-ink sm:inline">
               {businessProfile.name}
             </span>
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-ink text-[14px] font-medium text-white">
+            <div
+              className="flex shrink-0 items-center justify-center overflow-hidden text-[14px] font-medium text-ink"
+              style={{
+                width: `${Math.min(48, logoOptions.size)}px`,
+                height: `${Math.min(48, logoOptions.size)}px`,
+                backgroundColor: businessProfile.logoUrl ? logoOptions.backgroundColor : undefined,
+              }}
+            >
               {businessProfile.logoUrl ? (
                 <img
                   src={businessProfile.logoUrl}
                   alt={`${businessProfile.name} logo`}
-                  className="h-full w-full rounded-full bg-white p-1 object-contain"
+                  className="h-full w-full"
+                  style={{
+                    objectFit: logoOptions.fit,
+                    objectPosition: `${logoOptions.alignment} center`,
+                    padding: `${logoOptions.padding}px`,
+                  }}
                 />
               ) : (
                 businessProfile.name.charAt(0) || 'B'

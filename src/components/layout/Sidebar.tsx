@@ -10,6 +10,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import type { ActiveView } from '../../types';
+import { getLogoOptions } from '../../utils/logo';
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -25,6 +26,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
 }) => {
   const { activeView, setActiveView, quotations, invoices, clients, businessProfile } = useApp();
+  const logoOptions = getLogoOptions(businessProfile);
 
   const pendingQuotesCount = quotations.filter((q) => q.status === 'sent' || q.status === 'draft').length;
   const unpaidInvoicesCount = invoices.filter((i) => i.status !== 'paid').length;
@@ -173,12 +175,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
             onClick={() => handleNavClick('settings')}
             className={`flex cursor-pointer items-center gap-3 ${isCollapsed ? 'justify-center' : ''}`}
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-[14px] font-medium text-white">
+            <div
+              className="flex shrink-0 items-center justify-center overflow-hidden text-[14px] font-medium text-white"
+              style={{
+                width: `${Math.min(48, logoOptions.size)}px`,
+                height: `${Math.min(48, logoOptions.size)}px`,
+                backgroundColor: businessProfile.logoUrl ? logoOptions.backgroundColor : undefined,
+              }}
+            >
               {businessProfile.logoUrl ? (
                 <img
                   src={businessProfile.logoUrl}
                   alt={`${businessProfile.name} logo`}
-                  className="h-full w-full rounded-full bg-white p-1 object-contain"
+                  className="h-full w-full"
+                  style={{
+                    objectFit: logoOptions.fit,
+                    objectPosition: `${logoOptions.alignment} center`,
+                    padding: `${logoOptions.padding}px`,
+                  }}
                 />
               ) : (
                 businessProfile.name.charAt(0) || 'B'

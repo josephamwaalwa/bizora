@@ -1,6 +1,8 @@
 import React from 'react';
 import type { Quotation, Invoice } from '../../types';
 import { formatCurrency, formatDate } from '../../utils/formatters';
+import { getLogoOptions } from '../../utils/logo';
+import { QuotationPrintableDocument } from './QuotationPrintableDocument';
 
 interface PrintableDocumentProps {
   document: Quotation | Invoice;
@@ -8,11 +10,16 @@ interface PrintableDocumentProps {
 }
 
 export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document, type }) => {
+  if (type === 'quote') {
+    return <QuotationPrintableDocument document={document as Quotation} />;
+  }
+
   const isInvoice = type === 'invoice';
   const invoice = isInvoice ? (document as Invoice) : null;
   const quote = !isInvoice ? (document as Quotation) : null;
 
   const business = document.businessSnapshot;
+  const logo = getLogoOptions(business);
   const client = document.clientSnapshot;
   const docNumber = isInvoice ? invoice?.invoiceNumber : quote?.quotationNumber;
   const docTitle = isInvoice ? 'TAX INVOICE' : 'QUOTATION';
@@ -26,25 +33,39 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document, 
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-8 pb-8 border-b border-slate-300">
         {/* Company Identity */}
         <div className="space-y-2 max-w-sm">
-          {business.logoUrl ? (
-            <img
-              src={business.logoUrl}
-              alt={business.name}
-              className="h-12 max-w-[180px] object-contain object-left mb-2"
-            />
-          ) : (
-            <div className="mb-2">
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 font-sans uppercase">
+          <div className="flex items-start gap-3">
+            {business.logoUrl && (
+              <div
+                className="flex shrink-0 items-center justify-center overflow-hidden"
+                style={{
+                  width: `${logo.size}px`,
+                  height: `${Math.min(logo.size, 64)}px`,
+                  padding: `${logo.padding}px`,
+                  backgroundColor: logo.backgroundColor,
+                }}
+              >
+                <img
+                  src={business.logoUrl}
+                  alt={`${business.name} logo`}
+                  className="h-full w-full"
+                  style={{
+                    objectFit: logo.fit,
+                    objectPosition: `${logo.alignment} center`,
+                  }}
+                />
+              </div>
+            )}
+            <div className="min-w-0">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 font-sans">
                 {business.name}
               </h1>
+              {business.tagline && (
+                <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500 mt-1">
+                  {business.tagline}
+                </p>
+              )}
             </div>
-          )}
-
-          {business.tagline && (
-            <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500">
-              {business.tagline}
-            </p>
-          )}
+          </div>
 
           <div className="text-xs text-slate-600 space-y-0.5 pt-1">
             {business.address && <p>{business.address}</p>}
